@@ -1,0 +1,130 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero-classroom",
+      "description": "A modern, bright classroom with students learning.",
+      "imageUrl": "https://images.unsplash.com/photo-1601339434203-130259102db6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjbGFzc3Jvb20lMjBsZWFybmluZ3xlbnwwfHx8fDE3Njg3MzUwMDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "classroom learning"
+    },
+    {
+      "id": "auth-background",
+      "description": "An abstract background with geometric shapes related to technology and education.",
+      "imageUrl": "https://images.unsplash.com/photo-1501504905252-473c47e087f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZWR1Y2F0aW9uJTIwdGVjaG5vbG9neXxlbnwwfHx8fDE3Njg3MDcwNTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "education technology"
+    },
+    {
+      "id": "student-avatar-1",
+      "description": "Avatar for a student.",
+      "imageUrl": "https://images.unsplash.com/photo-1729824186570-4d4aede00043?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdHVkZW50JTIwYXZhdGFyfGVufDB8fHx8MTc2ODczNTAwNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "student avatar"
+    },
+    {
+      "id": "student-avatar-2",
+      "description": "Avatar for a female student.",
+      "imageUrl": "https://images.unsplash.com/photo-1646415753793-dcfda1dfeee3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzdHVkZW50JTIwYXZhdGFyfGVufDB8fHx8MTc2ODczNTAwNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "student avatar"
+    },
+    {
+      "id": "teacher-avatar-1",
+      "description": "Avatar for a teacher.",
+      "imageUrl": "https://images.unsplash.com/photo-1652795385761-7ac287d0cd03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx0ZWFjaGVyJTIwYXZhdGFyfGVufDB8fHx8MTc2ODczNTAwNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "teacher avatar"
+    },
+    {
+      "id": "teacher-avatar-2",
+      "description": "Avatar for a male teacher.",
+      "imageUrl": "https://images.unsplash.com/photo-1625262550495-1d3bfb5c1502?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx0ZWFjaGVyJTIwYXZhdGFyfGVufDB8fHx8MTc2ODczNTAwNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "teacher avatar"
+    },
+    {
+      "id": "admin-avatar-1",
+      "description": "Avatar for an admin.",
+      "imageUrl": "https://images.unsplash.com/photo-1648526607833-aa72324d06a8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YWRtaW4lMjBhdmF0YXJ8ZW58MHx8fHwxNzY4NzM1MDA2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "admin avatar"
+    },
+    {
+      "id": "about-us-hero",
+      "description": "A diverse team collaborating in a modern office.",
+      "imageUrl": "https://images.unsplash.com/photo-1527525443983-6e60c75fff46?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxkaXZlcnNlJTIwdGVhbXxlbnwwfHx8fDE3Njg3MjQ5NzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "diverse team"
+    },
+    {
+      "id": "course-dbms",
+      "description": "Image representing a Database Management course.",
+      "imageUrl": "https://images.unsplash.com/photo-1593720219276-0b1eacd0e26a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxkYXRhYmFzZXxlbnwwfHx8fDE3MjEwNjIwMjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "database server"
+    },
+    {
+      "id": "course-cpp",
+      "description": "Image representing a C++ programming course.",
+      "imageUrl": "https://images.unsplash.com/photo-1599507593499-a3f7d7d97667?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjJTIxJTIxJTIwY29kZXxlbnwwfHx8fDE3MjEwNjIxMDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "c++ code"
+    },
+    {
+      "id": "course-webdev",
+      "description": "Image representing a web development course.",
+      "imageUrl": "https://images.unsplash.com/photo-1605379399642-870262d3d051?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxkZXZlbG9wZXJ8ZW58MHx8fHwxNzIxMDYyMTQxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "web development"
+    },
+    {
+      "id": "course-swe",
+      "description": "Image representing a software engineering course.",
+      "imageUrl": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwcm9ncmFtbWluZ3xlbnwwfHx8fDE3MjEwNjIyMDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "software engineering"
+    },
+    {
+      "id": "course-ds",
+      "description": "Image representing a Data Structures course.",
+      "imageUrl": "https://images.unsplash.com/photo-1550439062-609e1531270e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjb2Rpbmd8ZW58MHx8fHwxNzIxMDYyMTAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data structures"
+    },
+    {
+      "id": "course-os",
+      "description": "Image representing an Operating Systems course.",
+      "imageUrl": "https://images.unsplash.com/photo-1544890225-2fde0e66ea9c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvcGVyYXRpbmclMjBzeXN0ZW18ZW58MHx8fHwxNzIxMDY0MzkxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "operating system"
+    },
+    {
+      "id": "course-cn",
+      "description": "Image representing a Computer Networks course.",
+      "imageUrl": "https://images.unsplash.com/photo-1581431889252-a5d6a81504db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjb21wdXRlciUyMG5ldHdvcmt8ZW58MHx8fHwxNzIxMDY0NDMwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "computer network"
+    },
+    {
+      "id": "course-ai",
+      "description": "Image representing an Artificial Intelligence course.",
+      "imageUrl": "https://images.unsplash.com/photo-1534723452862-4c874018d66d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxhcnRpZmljaWFsJTIwaW50ZWxsaWdlbmNlfGVufDB8fHx8MTcyMTA2NDQ4OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "artificial intelligence"
+    },
+    {
+      "id": "course-ml",
+      "description": "Image representing a Machine Learning course.",
+      "imageUrl": "https://images.unsplash.com/photo-1620712943543-95fc69afd524?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxtYWNoaW5lJTIwbGVhcm5pbmd8ZW58MHx8fHwxNzIxMDY0NTI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "machine learning"
+    },
+    {
+      "id": "course-mern",
+      "description": "Image representing a MERN Stack course.",
+      "imageUrl": "https://images.unsplash.com/photo-1633356122544-f134324a6cee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxyZWFjdCUyMGpzfGVufDB8fHx8MTcyMTA2NDU3OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "react js"
+    },
+    {
+      "id": "course-python",
+      "description": "An image representing the Python programming language.",
+      "imageUrl": "https://images.unsplash.com/photo-1627398242454-45a1465c2479?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxweXRob24lMjBjb2RlfGVufDB8fHx8MTcyMTM0Mzg2Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "python code"
+    },
+    {
+      "id": "course-cyber",
+      "description": "An image representing cybersecurity concepts.",
+      "imageUrl": "https://images.unsplash.com/photo-1544256718-3b62ff080b94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjeWJlciUyMHNlY3VyaXR5fGVufDB8fHx8MTcyMTM0MzkxN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cyber security"
+    },
+    {
+      "id": "course-cloud",
+      "description": "An image representing cloud computing and servers.",
+      "imageUrl": "https://images.unsplash.com/photo-1530325553241-4f6e73913451?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjbG91ZCUyMHNlcnZlcnxlbnwwfHx8fDE3MjEzNDQwMDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cloud server"
+    }
+  ]
+}
