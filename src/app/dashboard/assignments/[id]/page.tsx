@@ -5,11 +5,10 @@ import { useParams, useRouter } from 'next/navigation';
 import { useFirebase } from '@/firebase';
 import { useUser } from '@/components/user-provider';
 import { doc, getDoc, collection, onSnapshot, setDoc, serverTimestamp, updateDoc, query } from 'firebase/firestore';
-import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import type { Assignment, Submission } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { AlertCircle, ArrowLeft, Calendar, CheckCircle, Download, FileText, Info, Loader2, Paperclip, Star } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Calendar, CheckCircle, FileText, Info, Loader2, Paperclip, Star } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
@@ -39,7 +38,7 @@ const AssignmentDetailSkeleton = () => (
 export default function AssignmentDetailPage() {
     const params = useParams();
     const { id: assignmentId } = params;
-    const { firestore, storage } = useFirebase();
+    const { firestore } = useFirebase();
     const { user } = useUser();
     const router = useRouter();
     const { toast } = useToast();
@@ -50,7 +49,7 @@ export default function AssignmentDetailPage() {
 
     // Student states
     const [userSubmission, setUserSubmission] = useState<Submission | null>(null);
-    const [fileToUpload, setFileToUpload] = useState<File | null>(null);
+    const [submissionContent, setSubmissionContent] = useState('');
     const [comments, setComments] = useState('');
     const [isSubmitting, startSubmitting] = useTransition();
 
@@ -61,7 +60,12 @@ export default function AssignmentDetailPage() {
     const [grade, setGrade] = useState('');
     const [feedback, setFeedback] = useState('');
     const [isUpdatingGrade, startUpdatingGrade] = useTransition();
+    const [viewingSubmission, setViewingSubmission] = useState<Submission | null>(null);
 
+    const isUrl = (text: string) => {
+        if (!text) return false;
+        return text.startsWith('http://') || text.startsWith('https://');
+    }
 
     useEffect(() => {
         if (!assignmentId || !firestore || !user) return;
@@ -114,35 +118,22 @@ export default function AssignmentDetailPage() {
 
     }, [assignmentId, firestore, user]);
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setFileToUpload(e.target.files[0]);
-        }
-    }
-
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!fileToUpload || !user) {
-            toast({ title: 'No file selected', description: 'Please choose a file to submit.', variant: 'destructive' });
+        if (!submissionContent.trim() || !user) {
+            toast({ title: 'No submission', description: 'Please provide your submission content or a link.', variant: 'destructive' });
             return;
         }
 
         startSubmitting(async () => {
             try {
-                const filePath = `submissions/${assignmentId}/${user.id}/${fileToUpload.name}`;
-                const fileStorageRef = storageRef(storage, filePath);
-                
-                await uploadBytes(fileStorageRef, fileToUpload);
-                const downloadUrl = await getDownloadURL(fileStorageRef);
-                
                 const submissionRef = doc(firestore, `assignments/${assignmentId}/submissions`, user.id);
                 
                 const submissionData: Omit<Submission, 'id'> = {
                     studentId: user.id,
                     studentName: user.name,
                     submittedAt: serverTimestamp() as any,
-                    fileUrl: downloadUrl,
-                    fileName: fileToUpload.name,
+                    submissionContent: submissionContent,
                     comments: comments,
                     grade: 'Not Graded'
                 }
@@ -218,21 +209,20 @@ export default function AssignmentDetailPage() {
                         <Card>
                              <CardHeader>
                                 <CardTitle>Submit Your Work</CardTitle>
-                                <CardDescription>Upload your file and add any comments for your teacher.</CardDescription>
+                                <CardDescription>Paste a link to your work (e.g., Google Doc, GitHub) or write your submission in the text area below.</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <form className="space-y-4" onSubmit={handleFormSubmit}>
                                     <div className="space-y-2">
-                                        <Label htmlFor="submission-file">Upload File</Label>
-                                        <Input id="submission-file" type="file" onChange={handleFileChange} required />
-                                         <p className="text-xs text-muted-foreground">Supported formats: PDF, DOCX, ZIP. Max size: 10MB.</p>
+                                        <Label htmlFor="submission-content">Your Submission</Label>
+                                        <Textarea id="submission-content" value={submissionContent} onChange={e => setSubmissionContent(e.target.value)} placeholder="Paste a link to your work or write your submission here..." rows={8} required />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="submission-comments">Comments</Label>
+                                        <Label htmlFor="submission-comments">Comments (optional)</Label>
                                         <Textarea id="submission-comments" value={comments} onChange={e => setComments(e.target.value)} placeholder="Add any notes for your teacher..." rows={4} />
                                     </div>
                                     <div className="flex justify-end">
-                                        <Button type="submit" disabled={isSubmitting || !fileToUpload}>
+                                        <Button type="submit" disabled={isSubmitting || !submissionContent.trim()}>
                                             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                             Submit Assignment
                                         </Button>
@@ -247,20 +237,20 @@ export default function AssignmentDetailPage() {
                         <Card className="bg-green-50 border-green-200 dark:bg-green-900/30 dark:border-green-800">
                              <CardHeader>
                                 <CardTitle className="text-green-700 dark:text-green-300 flex items-center gap-2"><CheckCircle /> Submission Details</CardTitle>
-                                <CardDescription>You have already submitted this assignment.</CardDescription>
+                                <CardDescription>You have already submitted this assignment on {(userSubmission.submittedAt as any)?.toDate().toLocaleString()}</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <div className="flex items-center gap-4 rounded-md border bg-background p-3">
-                                    <FileText className="h-6 w-6 text-muted-foreground"/>
-                                    <div className="flex-1">
-                                        <p className="font-semibold">{userSubmission.fileName}</p>
-                                        <p className="text-sm text-muted-foreground">Submitted on: {(userSubmission.submittedAt as any)?.toDate().toLocaleString()}</p>
+                                <div>
+                                    <h4 className="font-semibold">Your Submission:</h4>
+                                    <div className="text-sm text-muted-foreground p-3 bg-muted/50 rounded-md mt-1 whitespace-pre-wrap break-words">
+                                        {isUrl(userSubmission.submissionContent) ? (
+                                            <a href={userSubmission.submissionContent} target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">
+                                                {userSubmission.submissionContent}
+                                            </a>
+                                        ) : (
+                                            <p>{userSubmission.submissionContent}</p>
+                                        )}
                                     </div>
-                                    <Button asChild variant="secondary" size="sm">
-                                        <a href={userSubmission.fileUrl} target="_blank" rel="noopener noreferrer">
-                                            <Download className="mr-2 h-4 w-4" /> Download
-                                        </a>
-                                    </Button>
                                 </div>
                                 {userSubmission.comments && (
                                     <div>
@@ -326,11 +316,9 @@ export default function AssignmentDetailPage() {
                                                         </Badge>
                                                     </TableCell>
                                                     <TableCell className="text-right space-x-2">
-                                                        <Button asChild variant="ghost" size="sm">
-                                                            <a href={sub.fileUrl} target="_blank" rel="noopener noreferrer">
-                                                                <Download className="mr-2 h-4 w-4" />
-                                                                Download
-                                                            </a>
+                                                        <Button variant="outline" size="sm" onClick={() => setViewingSubmission(sub)}>
+                                                          <FileText className="mr-2 h-4 w-4" />
+                                                          View
                                                         </Button>
                                                         <Button variant="outline" size="sm" onClick={() => handleOpenGradeDialog(sub)}>
                                                             <Star className="mr-2 h-4 w-4" />
@@ -407,6 +395,39 @@ export default function AssignmentDetailPage() {
                         </Button>
                     </DialogFooter>
                 </form>
+            </DialogContent>
+        </Dialog>
+        <Dialog open={!!viewingSubmission} onOpenChange={(isOpen) => !isOpen && setViewingSubmission(null)}>
+            <DialogContent className="sm:max-w-2xl">
+                <DialogHeader>
+                    <DialogTitle>Submission from {viewingSubmission?.studentName}</DialogTitle>
+                    <DialogDescription>
+                        Submitted at: {viewingSubmission?.submittedAt?.toDate().toLocaleString()}
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="py-4 space-y-4 max-h-[60vh] overflow-y-auto">
+                    <div>
+                        <h4 className="font-semibold text-foreground">Submission Content</h4>
+                        <div className="text-sm text-muted-foreground p-3 bg-muted/50 rounded-md mt-1 whitespace-pre-wrap break-words">
+                            {viewingSubmission && isUrl(viewingSubmission.submissionContent) ? (
+                                <a href={viewingSubmission.submissionContent} target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">
+                                    {viewingSubmission.submissionContent}
+                                </a>
+                            ) : (
+                                <p>{viewingSubmission?.submissionContent}</p>
+                            )}
+                        </div>
+                    </div>
+                    {viewingSubmission?.comments && (
+                        <div>
+                            <h4 className="font-semibold text-foreground">Student Comments</h4>
+                            <p className="text-sm text-muted-foreground p-3 bg-muted/50 rounded-md mt-1 whitespace-pre-wrap">{viewingSubmission.comments}</p>
+                        </div>
+                    )}
+                </div>
+                <DialogFooter>
+                     <Button type="button" variant="outline" onClick={() => setViewingSubmission(null)}>Close</Button>
+                </DialogFooter>
             </DialogContent>
         </Dialog>
         </>

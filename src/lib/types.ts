@@ -53,8 +53,7 @@ export type Submission = {
   studentId: string;
   studentName: string;
   submittedAt: Timestamp;
-  fileUrl: string;
-  fileName: string;
+  submissionContent: string;
   comments: string;
   grade?: string;
   feedback?: string;
