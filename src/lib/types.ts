@@ -112,3 +112,11 @@ export type RecordedLecture = {
   createdAt: Timestamp;
   teacherName: string;
 };
+
+export type AttendanceRecord = {
+  id: string;
+  userId: string;
+  userName: string;
+  date: string; // YYYY-MM-DD
+  markedAt: Timestamp;
+};
