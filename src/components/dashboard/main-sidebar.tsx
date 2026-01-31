@@ -14,7 +14,6 @@ import { useUser } from '@/components/user-provider';
 import {
   BookOpen,
   Bot,
-  Camera,
   ClipboardList,
   Cog,
   LayoutDashboard,
@@ -23,6 +22,7 @@ import {
   Presentation,
   Users,
   Video,
+  UserCheck,
 } from 'lucide-react';
 import { Icons } from '../icons';
 import Link from 'next/link';
@@ -34,14 +34,14 @@ const studentNav = [
   { href: '/dashboard/recorded-lectures', label: 'AI Recorded Lectures', icon: Video },
   { href: '/dashboard/chatbot', label: 'AI Chatbot', icon: Bot },
   { href: '/dashboard/announcements', label: 'Announcements', icon: Megaphone },
-  { href: '/dashboard/attendance', label: 'Face Attendance', icon: Camera },
+  { href: '/dashboard/attendance', label: 'Attendance', icon: UserCheck },
   { href: '/dashboard/assignments', label: 'Assignments', icon: ClipboardList },
   { href: '/dashboard/chat-history', label: 'Chat History', icon: MessageSquare },
 ];
 
 const teacherNav = [
   { href: '/dashboard/courses', label: 'Manage Courses', icon: BookOpen },
-  { href: '/dashboard/ai-suggestions', label: 'Live AI Class', icon: Presentation },
+  { href: '/dashboard/ai-suggestions', label: 'AI Teacher Studio', icon: Presentation },
   { href: '/dashboard/assignments', label: 'Manage Assignments', icon: ClipboardList },
   { href: '/dashboard/view-attendance', label: 'View Attendance', icon: Users },
   { href: '/dashboard/announcements', label: 'Post Announcements', icon: Megaphone },
@@ -90,7 +90,7 @@ export function MainSidebar() {
       <SidebarHeader className='border-b border-sidebar-border'>
         <div className="flex items-center gap-2 p-2">
             <Icons.logo className="h-8 w-8 text-sidebar-primary" />
-            <span className="font-headline text-xl font-semibold text-sidebar-foreground">LearnAI</span>
+            <span className="font-headline text-xl font-semibold text-sidebar-foreground">Learnify</span>
         </div>
       </SidebarHeader>
       <SidebarContent>

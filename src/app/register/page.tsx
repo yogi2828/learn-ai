@@ -90,7 +90,7 @@ export default function RegisterPage() {
     <Card className="w-full max-w-lg">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-headline">Create an Account</CardTitle>
-        <CardDescription>Join LearnAI and start your learning journey today.</CardDescription>
+        <CardDescription>Join Learnify and start your learning journey today.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
