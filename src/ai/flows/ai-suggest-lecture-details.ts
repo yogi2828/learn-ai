@@ -8,18 +8,13 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'zod';
+import { 
+  SuggestLectureDetailsInput, 
+  SuggestLectureDetailsInputSchema, 
+  SuggestLectureDetailsOutput, 
+  SuggestLectureDetailsOutputSchema 
+} from '@/lib/types';
 
-export const SuggestLectureDetailsInputSchema = z.object({
-  courseTitle: z.string().describe('The title of the course for which to suggest a lecture.'),
-});
-export type SuggestLectureDetailsInput = z.infer<typeof SuggestLectureDetailsInputSchema>;
-
-export const SuggestLectureDetailsOutputSchema = z.object({
-  topic: z.string().describe('A specific, engaging lecture topic suitable for the course. Should be a single-line title.'),
-  duration: z.nativeEnum([15, 30, 45, 60]).describe('The suggested duration for the lecture in minutes.'),
-});
-export type SuggestLectureDetailsOutput = z.infer<typeof SuggestLectureDetailsOutputSchema>;
 
 export async function suggestLectureDetails(input: SuggestLectureDetailsInput): Promise<SuggestLectureDetailsOutput> {
   return suggestLectureDetailsFlow(input);

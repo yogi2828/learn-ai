@@ -4,8 +4,7 @@ import { aiChatbot } from '@/ai/flows/ai-chatbot-doubt-solving';
 import { generateLectureContent } from '@/ai/flows/ai-suggested-lecture-content';
 import { generateRecordedLecture } from '@/ai/flows/ai-generated-recorded-lectures';
 import { suggestLectureDetails } from '@/ai/flows/ai-suggest-lecture-details';
-import type { GenerateLectureContentOutput } from '@/lib/types';
-import type { SuggestLectureDetailsOutput } from '@/ai/flows/ai-suggest-lecture-details';
+import type { GenerateLectureContentOutput, SuggestLectureDetailsOutput } from '@/lib/types';
 
 
 function getFriendlyErrorMessage(error: any, defaultMessage: string): string {
