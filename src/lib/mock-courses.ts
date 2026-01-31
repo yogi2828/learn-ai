@@ -28,7 +28,7 @@ export const mockCourses: Course[] = [
         id: 'android-m3',
         title: 'App Architecture',
         lessons: [
-            { id: 'android-l5', title: 'Activities, Intents, and Navigation', type: 'video', content: 'hIG2u_4nZc' },
+            { id: 'android-l5', title: 'Activities, Intents, and Navigation', type: 'video', content: 's_p_4KH3sUY' },
             { id: 'android-l6', title: 'MVVM with ViewModels', type: 'text', content: 'The Model-View-ViewModel (MVVM) architecture pattern separates UI logic from business logic. ViewModels are used to store and manage UI-related data in a lifecycle-conscious way.'}
         ]
       },
