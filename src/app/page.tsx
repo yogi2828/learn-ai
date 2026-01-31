@@ -22,8 +22,8 @@ const features = [
     },
     {
         icon: <CheckCircle className="h-8 w-8 text-primary" />,
-        title: "Automated Attendance",
-        description: "Our smart face recognition system marks your attendance automatically, saving you time and effort."
+        title: "Automated Systems",
+        description: "Our smart system handles scheduling and notifications, making the learning process seamless for everyone."
     }
 ];
 
@@ -32,13 +32,13 @@ const testimonials = [
         name: "Priya Sharma",
         role: "BCA Student",
         avatarId: "student-avatar-2",
-        quote: "LearnAI has transformed the way I study. The AI teacher is incredibly helpful for clarifying complex topics, and I love being able to re-watch lectures whenever I need to."
+        quote: "Learnify has transformed the way I study. The AI teacher is incredibly helpful for clarifying complex topics, and I love being able to re-watch lectures whenever I need to."
     },
     {
         name: "Arjun Mehta",
         role: "BCA Student",
         avatarId: "student-avatar-1",
-        quote: "The automated attendance is a game-changer! No more worrying about marking myself present. The whole platform is so intuitive and makes online learning actually enjoyable."
+        quote: "The automated class notifications are a game-changer! The whole platform is so intuitive and makes online learning actually enjoyable."
     }
 ]
 
@@ -53,7 +53,7 @@ export default function Home() {
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
               <Icons.logo className="h-8 w-8" />
-              <span className="font-headline">LearnAI</span>
+              <span className="font-headline">Learnify</span>
             </Link>
              <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
                 <Link href="/about" className="text-foreground/70 hover:text-foreground">About</Link>
@@ -104,7 +104,7 @@ export default function Home() {
               The Future of Learning is Here
             </h1>
             <p className="mt-4 text-lg sm:text-xl text-foreground/80">
-              LearnAI provides a seamless virtual classroom experience with an AI Teacher, ensuring your learning never stops.
+              Learnify provides a seamless virtual classroom experience with an AI Teacher, ensuring your learning never stops.
             </p>
             <div className="mt-8 flex justify-center gap-4">
               <Button size="lg" asChild>
@@ -120,7 +120,7 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold font-headline tracking-tight">A Smarter Way to Learn</h2>
-                <p className="mt-2 text-muted-foreground max-w-2xl mx-auto">Discover the features that make LearnAI the most advanced virtual classroom for BCA students.</p>
+                <p className="mt-2 text-muted-foreground max-w-2xl mx-auto">Discover the features that make Learnify the most advanced virtual classroom for BCA students.</p>
             </div>
             <div className="grid md:grid-cols-3 gap-8">
                 {features.map((feature) => (
@@ -145,7 +145,7 @@ export default function Home() {
          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
              <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold font-headline tracking-tight">Loved by Students</h2>
-                <p className="mt-2 text-muted-foreground max-w-2xl mx-auto">See what our students have to say about their experience with LearnAI.</p>
+                <p className="mt-2 text-muted-foreground max-w-2xl mx-auto">See what our students have to say about their experience with Learnify.</p>
             </div>
             <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                 {testimonials.map((testimonial) => {
@@ -177,7 +177,7 @@ export default function Home() {
            <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h2 className="text-3xl md:text-4xl font-bold font-headline tracking-tight">Ready to Start Your Journey?</h2>
                 <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-                    Join thousands of students and unlock your full potential with LearnAI. Register today and experience the future of education.
+                    Join thousands of students and unlock your full potential with Learnify. Register today and experience the future of education.
                 </p>
                 <div className="mt-8">
                      <Button size="lg" asChild>

@@ -3,7 +3,10 @@
 import { aiChatbot } from '@/ai/flows/ai-chatbot-doubt-solving';
 import { generateLectureContent } from '@/ai/flows/ai-suggested-lecture-content';
 import { generateRecordedLecture } from '@/ai/flows/ai-generated-recorded-lectures';
-import { GenerateLectureContentOutput } from '@/lib/types';
+import { suggestLectureDetails } from '@/ai/flows/ai-suggest-lecture-details';
+import type { GenerateLectureContentOutput } from '@/lib/types';
+import type { SuggestLectureDetailsOutput } from '@/ai/flows/ai-suggest-lecture-details';
+
 
 function getFriendlyErrorMessage(error: any, defaultMessage: string): string {
     let message = defaultMessage;
@@ -49,6 +52,17 @@ export async function getChatbotResponse(question: string, availableResources: s
   } catch (error: any) {
     console.error(error);
     const errorMessage = getFriendlyErrorMessage(error, 'Failed to get chatbot response.');
+    return { success: false, error: errorMessage };
+  }
+}
+
+export async function getSuggestedLectureDetails(courseTitle: string): Promise<{ success: boolean, data?: SuggestLectureDetailsOutput, error?: string }> {
+  try {
+    const result = await suggestLectureDetails({ courseTitle });
+    return { success: true, data: result };
+  } catch (error: any) {
+    console.error(error);
+    const errorMessage = getFriendlyErrorMessage(error, 'Failed to get lecture suggestions.');
     return { success: false, error: errorMessage };
   }
 }

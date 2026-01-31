@@ -28,7 +28,7 @@ export default function AboutPage() {
                 )}
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
                     <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold font-headline tracking-tight text-foreground">
-                        About LearnAI
+                        About Learnify
                     </h1>
                     <p className="mt-4 max-w-3xl mx-auto text-lg sm:text-xl text-foreground/80">
                         Revolutionizing education by making personalized, AI-driven learning accessible to everyone, everywhere.
@@ -42,7 +42,7 @@ export default function AboutPage() {
                     <div>
                          <h2 className="text-3xl font-bold font-headline tracking-tight">Our Mission</h2>
                          <p className="mt-4 text-muted-foreground">
-                            At LearnAI, our mission is to break down the barriers to quality education. We believe that every student deserves a personalized learning experience that adapts to their unique pace and style. By harnessing the power of artificial intelligence, we create engaging and effective virtual classrooms that empower both students and teachers.
+                            At Learnify, our mission is to break down the barriers to quality education. We believe that every student deserves a personalized learning experience that adapts to their unique pace and style. By harnessing the power of artificial intelligence, we create engaging and effective virtual classrooms that empower both students and teachers.
                          </p>
                          <p className="mt-4 text-muted-foreground">
                             We are committed to building a future where education is not a one-size-fits-all model, but a dynamic and interactive journey of discovery.

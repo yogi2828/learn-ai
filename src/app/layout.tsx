@@ -7,7 +7,7 @@ import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { Footer } from '@/components/layout/footer';
 
 export const metadata: Metadata = {
-  title: 'LearnAI',
+  title: 'Learnify',
   description: 'Virtual Classroom with AI Teacher',
 };
 

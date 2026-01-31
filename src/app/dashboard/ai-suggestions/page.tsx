@@ -3,21 +3,18 @@ import { useState, useTransition, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { getLectureContent, getRecordedLecture } from '@/app/actions';
+import { getLectureContent, getRecordedLecture, getSuggestedLectureDetails } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Bot, Loader2, Power, Video, Circle, CalendarIcon, BellPlus, XCircle } from 'lucide-react';
+import { Bot, Loader2, Power, Video, Circle, BellPlus, XCircle, Sparkles } from 'lucide-react';
 import { useUser } from '@/components/user-provider';
 import { useRouter } from 'next/navigation';
 import { useFirebase } from '@/firebase';
 import { doc, onSnapshot, setDoc, serverTimestamp, addDoc, collection, Timestamp } from 'firebase/firestore';
 import type { LiveClass } from '@/lib/types';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
+import { mockCourses } from '@/lib/mock-courses';
 
 
 const classId = 'dsa-live-session';
@@ -27,11 +24,12 @@ export default function AISuggestionsPage() {
   const router = useRouter();
   const { firestore } = useFirebase();
   
+  const [selectedCourse, setSelectedCourse] = useState('');
   const [topic, setTopic] = useState('');
   const [duration, setDuration] = useState(30);
-  const [scheduledDate, setScheduledDate] = useState<Date | undefined>();
 
   const [isProcessing, startProcessing] = useTransition();
+  const [isSuggesting, startSuggesting] = useTransition();
   
   const [liveClass, setLiveClass] = useState<LiveClass | null>(null);
 
@@ -51,14 +49,17 @@ export default function AISuggestionsPage() {
         if (doc.exists()) {
             const classData = doc.data() as LiveClass;
             setLiveClass(classData);
-            setTopic(classData.topic || '');
-            setDuration(classData.duration || 30);
+            if (classData.status === 'ended') {
+              setTopic('');
+              setDuration(30);
+              setSelectedCourse('');
+            }
         } else {
              const defaultClassData: Partial<LiveClass> = {
-                title: "Data Structures & Algorithms",
-                description: "Join the live session to learn about fundamental data structures.",
+                title: "AI Teacher Session",
+                description: "This is a session conducted by the AI Teacher.",
                 status: 'ended',
-                teacherName: user?.name || 'Teacher',
+                teacherName: 'AI Teacher',
             };
             setDoc(classRef, defaultClassData);
         }
@@ -70,10 +71,33 @@ export default function AISuggestionsPage() {
     return null;
   }
 
+  const handleSuggestDetails = () => {
+    if (!selectedCourse) {
+      toast({ title: "Error", description: "Please select a course first.", variant: "destructive" });
+      return;
+    }
+    const course = mockCourses.find(c => c.id === selectedCourse);
+    if (!course) {
+       toast({ title: "Error", description: "Could not find selected course.", variant: "destructive" });
+       return;
+    }
+
+    startSuggesting(async () => {
+      const result = await getSuggestedLectureDetails(course.title);
+      if (result.success && result.data) {
+        setTopic(result.data.topic);
+        setDuration(result.data.duration);
+        toast({ title: "Details Suggested!", description: "The AI has suggested a topic and duration." });
+      } else {
+        toast({ title: "Suggestion Failed", description: result.error, variant: "destructive" });
+      }
+    });
+  }
+
   const handleScheduleClass = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!topic || !scheduledDate) {
-        toast({ title: "Error", description: "Please provide topics and a schedule date/time.", variant: "destructive" });
+    if (!topic) {
+        toast({ title: "Error", description: "Please provide a topic for the class.", variant: "destructive" });
         return;
     }
 
@@ -84,16 +108,24 @@ export default function AISuggestionsPage() {
                 status: 'scheduled',
                 topic: topic,
                 duration: duration,
-                scheduledAt: Timestamp.fromDate(scheduledDate),
+                scheduledAt: serverTimestamp(),
                 updatedAt: serverTimestamp(),
                 teacherName: user.name,
-                title: "Data Structures & Algorithms",
-                description: "Join the live session to learn about fundamental data structures.",
+                title: topic,
+                description: `An AI-led session by ${user.name}.`,
                 script: null,
                 audioUrl: null,
             }, { merge: true });
 
-             toast({ title: "Class Scheduled!", description: "The class has been scheduled. You can start it manually from this page." });
+            await addDoc(collection(firestore, 'announcements'), {
+                title: `New AI Class Scheduled: ${topic}`,
+                content: `An AI-led class on "${topic}" has been scheduled by ${user.name}. Please check the Live Classes page to join when it starts.`,
+                authorId: 'system',
+                authorName: 'Learnify System',
+                createdAt: serverTimestamp(),
+            });
+
+             toast({ title: "Class Scheduled!", description: "Students will be notified. You can start it manually from this page." });
         } catch (error: any) {
             toast({ title: "Scheduling Failed", description: error.message, variant: "destructive" });
         }
@@ -160,13 +192,13 @@ export default function AISuggestionsPage() {
                 topic: '',
                 script: null,
                 audioUrl: null,
-                duration: null,
+                duration: 30,
                 scheduledAt: null,
                 updatedAt: serverTimestamp(),
             }, { merge: true });
             
             setTopic('');
-            setScheduledDate(undefined);
+            setSelectedCourse('');
             
             toast({
                 title: `Class ${action}`,
@@ -184,17 +216,14 @@ export default function AISuggestionsPage() {
 
   const renderClassStatus = () => {
     let statusText = 'ENDED';
-    let statusColor = 'text-red-600';
     let description = 'No class is currently active or scheduled.';
 
     if (isClassLive) {
         statusText = 'LIVE';
-        statusColor = 'text-green-600';
         description = `Topic: ${liveClass?.topic}`;
     } else if (isClassScheduled) {
         statusText = 'SCHEDULED';
-        statusColor = 'text-blue-600';
-        description = `Scheduled for: ${liveClass?.scheduledAt?.toDate().toLocaleString()}`;
+        description = `Scheduled Topic: ${liveClass?.topic}`;
     }
 
     return (
@@ -204,7 +233,7 @@ export default function AISuggestionsPage() {
                 <div>
                     <p className="font-semibold">
                         Current Status: 
-                        <span className={cn("ml-1 font-bold", statusColor)}>
+                        <span className={cn("ml-1 font-bold", isClassLive ? "text-green-600" : isClassScheduled ? "text-blue-600" : "text-red-600")}>
                             {statusText}
                         </span>
                     </p>
@@ -229,33 +258,53 @@ export default function AISuggestionsPage() {
   return (
     <div className="space-y-6">
        <div>
-        <h2 className="text-2xl md:text-3xl font-bold font-headline tracking-tight">Live AI Class Studio</h2>
-        <p className="text-muted-foreground">Automate your lectures. Enter topics, schedule a time, and let the AI Teacher take over.</p>
+        <h2 className="text-2xl md:text-3xl font-bold font-headline tracking-tight">AI Teacher Studio</h2>
+        <p className="text-muted-foreground">When you are absent, let the AI Teacher take over. Schedule a topic and the system will handle the rest.</p>
       </div>
 
       <Card>
         <CardHeader>
-            <CardTitle>Schedule a New Class</CardTitle>
+            <CardTitle>Schedule a New AI Class</CardTitle>
             <CardDescription>
-               {isClassEnded ? "Enter lecture details to schedule a new class." : "A class is already scheduled or live. Please end/cancel it before creating a new one."}
+               {isClassEnded ? "Select a course and let the AI suggest lecture details, then schedule the class." : "A class is already scheduled or live. Please end/cancel it before creating a new one."}
             </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
             <form onSubmit={handleScheduleClass} className='space-y-4'>
-                <div className='space-y-2'>
-                    <Label htmlFor="topic">Topics (one per line)</Label>
-                    <Textarea
-                        id="topic"
-                        value={topic}
-                        onChange={(e) => setTopic(e.target.value)}
-                        placeholder="e.g., Intro to Big O Notation&#10;Array vs. Linked List&#10;Stack and Queue Applications"
-                        rows={4}
-                        disabled={isProcessing || !isClassEnded}
-                    />
+                <div className="space-y-2">
+                  <Label htmlFor="course-select">Course</Label>
+                   <Select
+                      value={selectedCourse}
+                      onValueChange={setSelectedCourse}
+                      disabled={isProcessing || !isClassEnded}
+                  >
+                      <SelectTrigger id="course-select" className="w-full">
+                          <SelectValue placeholder="Select a course to get suggestions" />
+                      </SelectTrigger>
+                      <SelectContent>
+                          {mockCourses.map(course => (
+                              <SelectItem key={course.id} value={course.id}>{course.title}</SelectItem>
+                          ))}
+                      </SelectContent>
+                  </Select>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Button type="button" variant="outline" onClick={handleSuggestDetails} disabled={isSuggesting || !selectedCourse || !isClassEnded}>
+                  {isSuggesting ? <><Loader2 className="mr-2 animate-spin" />Suggesting...</> : <><Sparkles className="mr-2" />Suggest Details</>}
+                </Button>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t">
                     <div className="space-y-2">
-                        <Label htmlFor="duration">Approximate Duration</Label>
+                        <Label htmlFor="topic">Suggested Topic</Label>
+                        <Input
+                            id="topic"
+                            value={topic}
+                            onChange={(e) => setTopic(e.target.value)}
+                            placeholder="AI will suggest a topic here"
+                            disabled={isProcessing || !isClassEnded}
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="duration">Suggested Duration</Label>
                          <Select
                             value={duration.toString()}
                             onValueChange={(val) => setDuration(parseInt(val, 10))}
@@ -272,38 +321,9 @@ export default function AISuggestionsPage() {
                             </SelectContent>
                         </Select>
                     </div>
-                     <div className="space-y-2">
-                        <Label htmlFor="schedule-date">Schedule Date & Time</Label>
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    variant={"outline"}
-                                    className={cn("w-full justify-start text-left font-normal", !scheduledDate && "text-muted-foreground")}
-                                     disabled={isProcessing || !isClassEnded}
-                                >
-                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {scheduledDate ? format(scheduledDate, "PPP p") : <span>Pick a date and time</span>}
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0">
-                                <Calendar mode="single" selected={scheduledDate} onSelect={setScheduledDate} initialFocus />
-                                <div className='p-2 border-t'>
-                                    <Label className="text-sm">Time</Label>
-                                    <Input type="time" onChange={e => {
-                                        const [hours, minutes] = e.target.value.split(':');
-                                        setScheduledDate(prev => {
-                                            const newDate = prev ? new Date(prev) : new Date();
-                                            newDate.setHours(parseInt(hours), parseInt(minutes));
-                                            return newDate;
-                                        });
-                                    }} />
-                                </div>
-                            </PopoverContent>
-                        </Popover>
-                    </div>
                 </div>
-                <Button type="submit" disabled={isProcessing || !isClassEnded} className='w-full sm:w-auto'>
-                    {isProcessing ? <><Loader2 className="mr-2 animate-spin" />Working...</> : <><BellPlus className="mr-2" />Schedule Class</>}
+                <Button type="submit" disabled={isProcessing || !isClassEnded || !topic} className='w-full sm:w-auto'>
+                    {isProcessing ? <><Loader2 className="mr-2 animate-spin" />Scheduling...</> : <><BellPlus className="mr-2" />Schedule Class</>}
                 </Button>
             </form>
 
