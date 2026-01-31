@@ -12,7 +12,7 @@ export const mockCourses: Course[] = [
         id: 'android-m1',
         title: 'Kotlin Fundamentals',
         lessons: [
-          { id: 'android-l1', title: 'Introduction to Kotlin', type: 'video', content: 'prMxgB0n6T0' },
+          { id: 'android-l1', title: 'Introduction to Kotlin', type: 'video', content: '_0xtjtbk8QU' },
           { id: 'android-l2', title: 'Variables, Functions, and Classes', type: 'text', content: 'Kotlin is a modern, statically typed programming language. We will cover the basics of defining variables (val vs var), creating functions with `fun`, and structuring code with classes.' },
         ],
       },
@@ -20,7 +20,7 @@ export const mockCourses: Course[] = [
         id: 'android-m2',
         title: 'Building User Interfaces',
         lessons: [
-          { id: 'android-l3', title: 'Intro to Jetpack Compose', type: 'video', content: 'CiiS_9-d3L8' },
+          { id: 'android-l3', title: 'Intro to Jetpack Compose', type: 'video', content: 'f2bE-c_qa3Y' },
           { id: 'android-l4', title: 'Layouts, Modifiers, and State', type: 'text', content: 'Compose builds UIs by nesting composable functions. We will learn about core layout components like Column, Row, and Box, and how to manage UI state with `remember` and `mutableStateOf`.' },
         ],
       },
@@ -28,7 +28,7 @@ export const mockCourses: Course[] = [
         id: 'android-m3',
         title: 'App Architecture',
         lessons: [
-            { id: 'android-l5', title: 'Activities, Intents, and Navigation', type: 'video', content: 's_p_4KH3sUY' },
+            { id: 'android-l5', title: 'Activities & Navigation', type: 'video', content: '3oQ1vS1aK-c' },
             { id: 'android-l6', title: 'MVVM with ViewModels', type: 'text', content: 'The Model-View-ViewModel (MVVM) architecture pattern separates UI logic from business logic. ViewModels are used to store and manage UI-related data in a lifecycle-conscious way.'}
         ]
       },
@@ -45,7 +45,7 @@ export const mockCourses: Course[] = [
             id: 'py-m1',
             title: 'Python Fundamentals',
             lessons: [
-                { id: 'py-l1', title: 'Introduction to Python', type: 'video', content: 'kqtD5dpn9C8' },
+                { id: 'py-l1', title: 'Introduction to Python', type: 'video', content: '_uQrJ0TkZlc' },
                 { id: 'py-l2', title: 'Data Structures in Python', type: 'text', content: 'Python includes several built-in data structures, such as lists, tuples, dictionaries, and sets. These are essential for organizing and storing data efficiently.'}
             ]
         },
@@ -53,7 +53,7 @@ export const mockCourses: Course[] = [
             id: 'py-m2',
             title: 'Control Flow and Functions',
             lessons: [
-              { id: 'py-l3', title: 'Conditional Statements and Loops', type: 'video', content: 'PqFKCq1uyQ0' },
+              { id: 'py-l3', title: 'Conditional Statements and Loops', type: 'video', content: 'OnurGvYYR1k' },
               { id: 'py-l4', title: 'Writing Your Own Functions', type: 'text', content: 'Functions are reusable blocks of code that perform a specific task. They help to make your code more modular, organized, and easier to debug.'}
             ]
         }
@@ -70,7 +70,7 @@ export const mockCourses: Course[] = [
             id: 'cs-m1',
             title: 'Introduction to Cybersecurity',
             lessons: [
-                { id: 'cs-l1', title: 'The Threat Landscape', type: 'video', content: 'mutLUly04wA' },
+                { id: 'cs-l1', title: 'The Threat Landscape', type: 'video', content: 'inWWhr5tnEA' },
                 { id: 'cs-l2', title: 'Core Security Principles (CIA Triad)', type: 'text', content: 'The CIA Triad (Confidentiality, Integrity, Availability) is a foundational model for guiding information security policies and identifying vulnerabilities.'}
             ]
         },
@@ -78,7 +78,7 @@ export const mockCourses: Course[] = [
             id: 'cs-m2',
             title: 'Network & Web Security',
             lessons: [
-              { id: 'cs-l3', title: 'Common Web Attacks (XSS, SQLi)', type: 'video', content: 'YEj5KV2m6eI' },
+              { id: 'cs-l3', title: 'Common Web Attacks (XSS, SQLi)', type: 'video', content: 'c1-5A8y84yE' },
               { id: 'cs-l4', title: 'Firewalls and Intrusion Detection', type: 'text', content: 'Firewalls act as a barrier between a trusted network and an untrusted network. Intrusion Detection Systems (IDS) monitor network traffic for suspicious activity and issue alerts when such activity is discovered.'}
             ]
         }
@@ -95,7 +95,7 @@ export const mockCourses: Course[] = [
             id: 'dcn-m1',
             title: 'Foundations of Networking',
             lessons: [
-                { id: 'dcn-l1', title: 'What is a Computer Network?', type: 'video', content: '03nHeVd_dKk' },
+                { id: 'dcn-l1', title: 'What is a Computer Network?', type: 'video', content: '3QhU9jd03a0' },
                 { id: 'dcn-l2', title: 'The OSI Model Explained', type: 'text', content: 'The Open Systems Interconnection (OSI) model is a conceptual framework that standardizes the functions of a telecommunication or computing system into seven abstract layers.'}
             ]
         },
@@ -103,7 +103,7 @@ export const mockCourses: Course[] = [
             id: 'dcn-m2',
             title: 'The TCP/IP Protocol Suite',
             lessons: [
-                { id: 'dcn-l3', title: 'Understanding TCP and UDP', type: 'video', content: 'I-grWRg-b_g' },
+                { id: 'dcn-l3', title: 'Understanding TCP and UDP', type: 'video', content: 'u-qs8gEcmGE' },
                 { id: 'dcn-l4', title: 'IP Addressing and Subnetting', type: 'text', content: 'An Internet Protocol (IP) address is a numerical label assigned to each device connected to a computer network. Subnetting is the practice of dividing a network into two or more smaller networks.'}
             ]
         }
