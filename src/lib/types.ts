@@ -1,21 +1,24 @@
 import { Timestamp } from "firebase/firestore";
 import { z } from "zod";
 
-export type GenerateLectureContentInput = {
-  topic: string;
-  duration?: number;
-};
+export const GenerateLectureContentInputSchema = z.object({
+  topic: z.string().describe('The main topic for the lecture content.'),
+  duration: z.number().optional().describe('The approximate duration of the lecture in minutes.'),
+});
+export type GenerateLectureContentInput = z.infer<typeof GenerateLectureContentInputSchema>;
 
-export type GenerateLectureContentOutput = {
-  title: string;
-  introduction: string;
-  sections: Array<{
-    heading: string;
-    content: string;
-    imageUrl?: string;
-  }>;
-  conclusion: string;
-};
+export const GenerateLectureContentOutputSchema = z.object({
+  title: z.string().describe("A concise and engaging title for the lecture."),
+  introduction: z.string().describe("A brief introduction to the lecture topic."),
+  sections: z.array(z.object({
+      heading: z.string().describe("The heading for this section of the lecture."),
+      content: z.string().describe("The detailed content for this section."),
+      imageUrl: z.string().url().optional().describe("A URL to a relevant image for this section."),
+  })).describe("An array of lecture sections, each with a heading and content."),
+  conclusion: z.string().describe("A concluding summary of the lecture."),
+});
+export type GenerateLectureContentOutput = z.infer<typeof GenerateLectureContentOutputSchema>;
+
 
 export const SuggestLectureDetailsInputSchema = z.object({
   courseTitle: z.string().describe('The title of the course for which to suggest a lecture.'),

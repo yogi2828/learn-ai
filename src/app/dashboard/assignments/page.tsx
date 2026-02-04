@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FilePlus2, MoreHorizontal, Loader2 } from "lucide-react";
+import { FilePlus2, Loader2 } from "lucide-react";
 import { useUser } from "@/components/user-provider";
 import { useFirebase } from '@/firebase';
 import { collection, onSnapshot, query, orderBy, addDoc, serverTimestamp, collectionGroup, where, Timestamp } from 'firebase/firestore';

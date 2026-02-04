@@ -9,7 +9,12 @@
 
 import {ai} from '@/ai/genkit';
 import { googleAI } from '@genkit-ai/google-genai';
-import { GenerateLectureContentInput, GenerateLectureContentOutput } from '@/lib/types';
+import { 
+  GenerateLectureContentInput, 
+  GenerateLectureContentInputSchema,
+  GenerateLectureContentOutput, 
+  GenerateLectureContentOutputSchema
+} from '@/lib/types';
 
 export async function generateLectureContent(
   input: GenerateLectureContentInput
@@ -17,52 +22,40 @@ export async function generateLectureContent(
   return generateLectureContentFlow(input);
 }
 
-const prompt = `You are an AI assistant designed to generate structured lecture content for teachers.
+const lecturePrompt = ai.definePrompt({
+  name: 'generateLectureContentPrompt',
+  input: { schema: GenerateLectureContentInputSchema },
+  output: { schema: GenerateLectureContentOutputSchema },
+  prompt: `You are an AI assistant designed to generate structured lecture content for teachers.
 
-Your output MUST be a valid JSON object that adheres to this TypeScript type:
-type GenerateLectureContentOutput = {
-  title: string;
-  introduction: string;
-  sections: Array<{
-    heading: string;
-    content: string;
-  }>;
-  conclusion: string;
-};
-
-Based on the given topic(s), create a single cohesive lecture with a title, introduction, several sections (each with a heading and content), and a conclusion. 
+Based on the given topic, create a single cohesive lecture with a title, introduction, several sections (each with a heading and content), and a conclusion. 
 The lecture should be comprehensive, well-organized, and suitable for a presentation of approximately {{duration}} minutes.
 If multiple topics are provided, synthesize them into a coherent structure.
-Do NOT include any text or markdown formatting outside of the main JSON object.
 
 Topic(s): {{{topic}}}
-`;
+`,
+ config: {
+    safetySettings: [
+      { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+    ],
+  },
+});
 
 const generateLectureContentFlow = ai.defineFlow(
   {
     name: 'generateLectureContentFlow',
+    inputSchema: GenerateLectureContentInputSchema,
+    outputSchema: GenerateLectureContentOutputSchema,
   },
   async (input: GenerateLectureContentInput): Promise<GenerateLectureContentOutput> => {
     // 1. Generate the text content
-     const llmResponse = await ai.generate({
-      prompt: prompt.replace('{{{topic}}}', input.topic).replace('{{{duration}}}', (input.duration || 30).toString()),
-      config: {
-        safetySettings: [
-          { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
-          { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
-          { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
-          { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
-        ],
-      },
-    });
-
-    let lecture: GenerateLectureContentOutput;
-    try {
-        const jsonText = llmResponse.text.replace(/```json\n?/, '').replace(/```$/, '');
-        lecture = JSON.parse(jsonText);
-    } catch (e) {
-        console.error("Failed to parse AI response as JSON:", llmResponse.text);
-        throw new Error(`The AI returned an invalid data format for the lecture text. Raw response: ${llmResponse.text}`);
+    const { output: lecture } = await lecturePrompt(input);
+    
+    if (!lecture) {
+        throw new Error(`The AI returned an invalid data format for the lecture text.`);
     }
     
     // 2. Generate an image for each section
@@ -74,7 +67,7 @@ const generateLectureContentFlow = ai.defineFlow(
           prompt: imagePrompt,
         });
         if (media.url) {
-          (section as any).imageUrl = media.url;
+          section.imageUrl = media.url;
         }
       } catch (e) {
         console.error(`Failed to generate image for section "${section.heading}":`, e);

@@ -1,10 +1,29 @@
 import type { Metadata } from 'next';
+import { Inter, Space_Grotesk, Source_Code_Pro } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { UserProvider } from '@/components/user-provider';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { Footer } from '@/components/layout/footer';
+
+const fontBody = Inter({
+  subsets: ['latin'],
+  variable: '--font-body',
+  display: 'swap',
+});
+
+const fontHeadline = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-headline',
+  display: 'swap',
+});
+
+const fontCode = Source_Code_Pro({
+  subsets: ['latin'],
+  variable: '--font-code',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Learnify',
@@ -18,12 +37,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
-      </head>
-      <body className={cn('font-body antialiased flex flex-col min-h-screen')}>
+      <body className={cn(
+        'font-body antialiased flex flex-col min-h-screen',
+        fontBody.variable,
+        fontHeadline.variable,
+        fontCode.variable
+      )}>
         <FirebaseClientProvider>
           <UserProvider>
             <main className="flex-grow">{children}</main>
