@@ -171,7 +171,6 @@ export default function AISuggestionsPage() {
           throw new Error(audioResult.error || 'Failed to generate lecture audio.');
         }
 
-        toast({ title: 'Starting Class!', description: 'The live session is now beginning for students.' });
         const classRef = doc(firestore, 'liveClasses', classId);
         await setDoc(classRef, {
             status: 'live',
@@ -188,6 +187,8 @@ export default function AISuggestionsPage() {
           createdAt: serverTimestamp(),
           teacherName: user.name,
         });
+
+        toast({ title: 'Class Started!', description: 'The session is live and a copy has been saved to Recorded Lectures.' });
 
       } catch (error: any) {
          toast({ title: "Generation Failed", description: error.message, variant: "destructive" });
@@ -404,5 +405,3 @@ export default function AISuggestionsPage() {
     </div>
   );
 }
-
-    

@@ -60,7 +60,7 @@ export default function RecordedLecturesPage() {
                 <div className="flex flex-col items-center justify-center text-center p-10 border-2 border-dashed rounded-lg">
                     <Bot className="h-12 w-12 text-muted-foreground" />
                     <p className="mt-4 text-muted-foreground">No recorded lectures are available yet.</p>
-                    <p className="mt-1 text-xs text-muted-foreground">Lectures will appear here once a teacher generates them.</p>
+                    <p className="mt-1 text-xs text-muted-foreground">Lectures are automatically recorded and saved here whenever a teacher starts a new AI-led class from the 'AI Teacher Studio'.</p>
                 </div>
             ) : (
                 <Accordion type="single" collapsible className="w-full">
