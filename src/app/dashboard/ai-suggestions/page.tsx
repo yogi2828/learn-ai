@@ -271,7 +271,12 @@ export default function AISuggestionsPage() {
     )
   }
 
-    const timeSlots = Array.from({ length: 12 }, (_, i) => `${(i + 8).toString().padStart(2, '0')}:00`);
+  const timeSlots = Array.from({ length: 24 }, (_, i) => {
+    const hour = Math.floor(i / 2) + 8;
+    const minute = (i % 2) * 30;
+    if (hour > 19) return null; // Limit to 7:30 PM
+    return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+  }).filter(Boolean) as string[];
 
 
   return (
@@ -399,3 +404,5 @@ export default function AISuggestionsPage() {
     </div>
   );
 }
+
+    
