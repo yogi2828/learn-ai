@@ -20,6 +20,7 @@ import {
   Megaphone,
   MessageSquare,
   Presentation,
+  User,
   Users,
   Video,
   UserCheck,
@@ -129,7 +130,7 @@ export function MainSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={pathname === '/dashboard/profile'} tooltip={{ children: profileLabel }}>
               <Link href="/dashboard/profile">
-                <Cog />
+                <User />
                 <span>{profileLabel}</span>
               </Link>
             </SidebarMenuButton>
