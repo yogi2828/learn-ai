@@ -91,7 +91,7 @@ export function MainSidebar() {
       <SidebarHeader className='border-b border-sidebar-border'>
         <div className="flex items-center gap-2 p-2">
             <Icons.logo className="h-8 w-8 text-sidebar-primary" />
-            <span className="font-headline text-xl font-semibold text-sidebar-foreground">Learnify</span>
+            <span className="font-headline text-xl font-semibold text-sidebar-foreground">Learnify-AI</span>
         </div>
       </SidebarHeader>
       <SidebarContent>

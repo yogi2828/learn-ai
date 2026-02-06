@@ -12,14 +12,18 @@
 
 import {ai} from '@/ai/genkit';
 import * as wav from 'wav';
+import { z } from 'zod';
 
-export type RecordedLectureInput = {
-  script: string;
-};
+const RecordedLectureInputSchema = z.object({
+  script: z.string(),
+});
+export type RecordedLectureInput = z.infer<typeof RecordedLectureInputSchema>;
 
-export type RecordedLectureOutput = {
-  media: string;
-};
+const RecordedLectureOutputSchema = z.object({
+  media: z.string().describe("The generated audio as a data URI."),
+});
+export type RecordedLectureOutput = z.infer<typeof RecordedLectureOutputSchema>;
+
 
 /**
  * Generates a recorded lecture for a given topic using an AI model.
@@ -33,6 +37,8 @@ export async function generateRecordedLecture(input: RecordedLectureInput): Prom
 const generateRecordedLectureFlow = ai.defineFlow(
   {
     name: 'generateRecordedLectureFlow',
+    inputSchema: RecordedLectureInputSchema,
+    outputSchema: RecordedLectureOutputSchema,
   },
   async (input: RecordedLectureInput) => {
     const { media } = await ai.generate({

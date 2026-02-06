@@ -28,7 +28,7 @@ export default function AuthLayout({
         className="absolute left-8 top-8 z-20 flex items-center text-lg font-bold tracking-tight text-foreground"
       >
         <Icons.logo className="mr-2 h-6 w-6" />
-        <span className="font-headline">Learnify</span>
+        <span className="font-headline">Learnify-AI</span>
       </Link>
       <div className="relative z-10 w-full max-w-md p-4">{children}</div>
     </div>

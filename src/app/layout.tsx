@@ -26,7 +26,7 @@ const fontCode = Source_Code_Pro({
 });
 
 export const metadata: Metadata = {
-  title: 'Learnify',
+  title: 'Learnify-AI',
   description: 'Virtual Classroom with AI Teacher',
 };
 

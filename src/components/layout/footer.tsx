@@ -11,9 +11,9 @@ export function Footer() {
           <div className="space-y-4">
              <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
               <Icons.logo className="h-8 w-8" />
-              <span className="font-headline">Learnify</span>
+              <span className="font-headline">Learnify-AI</span>
             </Link>
-            <p className="text-muted-foreground text-sm">The future of learning, powered by AI.</p>
+            <p className="text-muted-foreground text-sm">An AI-powered virtual classroom system.</p>
             <div className="flex space-x-4">
               <Button variant="ghost" size="icon" asChild>
                 <Link href="#" aria-label="Twitter"><Twitter className="h-5 w-5" /></Link>
@@ -49,7 +49,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Learnify. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Learnify-AI. All rights reserved.</p>
         </div>
       </div>
     </footer>

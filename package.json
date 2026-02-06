@@ -1,8 +1,8 @@
 {
-  "name": "learnify",
+  "name": "learnify-ai",
   "version": "0.1.0",
   "private": true,
-  "description": "A virtual classroom with an AI teacher.",
+  "description": "Learnify-AI is an AI-powered virtual classroom system developed for BCA 6th Semester students.",
   "scripts": {
     "dev": "next dev --turbopack -p 9002",
     "genkit:dev": "genkit start -- tsx src/ai/dev.ts",
