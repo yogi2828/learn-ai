@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 import { getLectureContent, getRecordedLecture, getSuggestedLectureDetails } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
-import { Bot, Loader2, Power, Video, Circle, BellPlus, XCircle, Sparkles } from 'lucide-react';
+import { Bot, Loader2, Power, Video, Circle, BellPlus, XCircle, Sparkles, Calendar as CalendarIcon } from 'lucide-react';
 import { useUser } from '@/components/user-provider';
 import { useRouter } from 'next/navigation';
 import { useFirebase } from '@/firebase';
@@ -15,6 +15,9 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { mockCourses } from '@/lib/mock-courses';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { format } from 'date-fns';
 
 
 const classId = 'dsa-live-session';
@@ -27,6 +30,8 @@ export default function AISuggestionsPage() {
   const [selectedCourse, setSelectedCourse] = useState('');
   const [topic, setTopic] = useState('');
   const [duration, setDuration] = useState(30);
+  const [scheduledDate, setScheduledDate] = useState<Date>();
+  const [scheduledTime, setScheduledTime] = useState('');
 
   const [isProcessing, startProcessing] = useTransition();
   const [isSuggesting, startSuggesting] = useTransition();
@@ -53,6 +58,8 @@ export default function AISuggestionsPage() {
               setTopic('');
               setDuration(30);
               setSelectedCourse('');
+              setScheduledDate(undefined);
+              setScheduledTime('');
             }
         } else {
              const defaultClassData: Partial<LiveClass> = {
@@ -100,15 +107,23 @@ export default function AISuggestionsPage() {
         toast({ title: "Error", description: "Please provide a topic for the class.", variant: "destructive" });
         return;
     }
+    if (!scheduledDate || !scheduledTime) {
+      toast({ title: "Error", description: "Please select a date and time for the class.", variant: "destructive" });
+      return;
+    }
 
     startProcessing(async () => {
         const classRef = doc(firestore, 'liveClasses', classId);
         try {
+            const [hours, minutes] = scheduledTime.split(':').map(Number);
+            const finalScheduleDate = new Date(scheduledDate);
+            finalScheduleDate.setHours(hours, minutes, 0, 0);
+
             await setDoc(classRef, {
                 status: 'scheduled',
                 topic: topic,
                 duration: duration,
-                scheduledAt: serverTimestamp(),
+                scheduledAt: finalScheduleDate,
                 updatedAt: serverTimestamp(),
                 teacherName: user.name,
                 title: topic,
@@ -119,7 +134,7 @@ export default function AISuggestionsPage() {
 
             await addDoc(collection(firestore, 'announcements'), {
                 title: `New AI Class Scheduled: ${topic}`,
-                content: `An AI-led class on "${topic}" has been scheduled by ${user.name}. Please check the Live Classes page to join when it starts.`,
+                content: `An AI-led class on "${topic}" has been scheduled by ${user.name} for ${finalScheduleDate.toLocaleString()}. Please check the Live Classes page to join when it starts.`,
                 authorId: 'system',
                 authorName: 'Learnify System',
                 createdAt: serverTimestamp(),
@@ -199,6 +214,8 @@ export default function AISuggestionsPage() {
             
             setTopic('');
             setSelectedCourse('');
+            setScheduledDate(undefined);
+            setScheduledTime('');
             
             toast({
                 title: `Class ${action}`,
@@ -253,6 +270,8 @@ export default function AISuggestionsPage() {
         </div>
     )
   }
+
+    const timeSlots = Array.from({ length: 12 }, (_, i) => `${(i + 8).toString().padStart(2, '0')}:00`);
 
 
   return (
@@ -322,6 +341,50 @@ export default function AISuggestionsPage() {
                         </Select>
                     </div>
                 </div>
+
+                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="date">Schedule Date</Label>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                variant={"outline"}
+                                className={cn(
+                                    "w-full justify-start text-left font-normal",
+                                    !scheduledDate && "text-muted-foreground"
+                                )}
+                                disabled={!isClassEnded}
+                                >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {scheduledDate ? format(scheduledDate, "PPP") : <span>Pick a date</span>}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                                <Calendar
+                                mode="single"
+                                selected={scheduledDate}
+                                onSelect={setScheduledDate}
+                                initialFocus
+                                />
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="time">Schedule Time</Label>
+                        <Select onValueChange={setScheduledTime} value={scheduledTime} disabled={!isClassEnded}>
+                            <SelectTrigger id="time">
+                                <SelectValue placeholder="Select a time" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {timeSlots.map(slot => (
+                                    <SelectItem key={slot} value={slot}>{format(new Date(`1970-01-01T${slot}`), 'p')}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+
+
                 <Button type="submit" disabled={isProcessing || !isClassEnded || !topic} className='w-full sm:w-auto'>
                     {isProcessing ? <><Loader2 className="mr-2 animate-spin" />Scheduling...</> : <><BellPlus className="mr-2" />Schedule Class</>}
                 </Button>
