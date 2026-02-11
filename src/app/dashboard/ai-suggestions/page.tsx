@@ -18,6 +18,8 @@ import { mockCourses } from '@/lib/mock-courses';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 
 const classId = 'dsa-live-session';
@@ -68,8 +70,15 @@ export default function AISuggestionsPage() {
                 status: 'ended',
                 teacherName: 'AI Teacher',
             };
-            setDoc(classRef, defaultClassData);
+            setDoc(classRef, defaultClassData).catch(error => {
+                const permissionError = new FirestorePermissionError({ path: classRef.path, operation: 'create', requestResourceData: defaultClassData }, error);
+                errorEmitter.emit('permission-error', permissionError);
+            });
         }
+    },
+    (error) => {
+        const permissionError = new FirestorePermissionError({ path: classRef.path, operation: 'get' }, error);
+        errorEmitter.emit('permission-error', permissionError);
     });
     return () => unsubscribe();
   }, [firestore, user]);
@@ -112,38 +121,44 @@ export default function AISuggestionsPage() {
       return;
     }
 
-    startProcessing(async () => {
+    startProcessing(() => {
         const classRef = doc(firestore, 'liveClasses', classId);
-        try {
-            const [hours, minutes] = scheduledTime.split(':').map(Number);
-            const finalScheduleDate = new Date(scheduledDate);
-            finalScheduleDate.setHours(hours, minutes, 0, 0);
+        
+        const [hours, minutes] = scheduledTime.split(':').map(Number);
+        const finalScheduleDate = new Date(scheduledDate);
+        finalScheduleDate.setHours(hours, minutes, 0, 0);
 
-            await setDoc(classRef, {
-                status: 'scheduled',
-                topic: topic,
-                duration: duration,
-                scheduledAt: finalScheduleDate,
-                updatedAt: serverTimestamp(),
-                teacherName: user.name,
-                title: topic,
-                description: `An AI-led session by ${user.name}.`,
-                script: null,
-                audioUrl: null,
-            }, { merge: true });
+        const classData: Partial<LiveClass> = {
+            status: 'scheduled',
+            topic: topic,
+            duration: duration,
+            scheduledAt: Timestamp.fromDate(finalScheduleDate),
+            updatedAt: serverTimestamp(),
+            teacherName: user.name,
+            title: topic,
+            description: `An AI-led session by ${user.name}.`,
+            script: null,
+            audioUrl: null,
+        };
 
-            await addDoc(collection(firestore, 'announcements'), {
+        setDoc(classRef, classData, { merge: true }).then(() => {
+            const announcementData = {
                 title: `New AI Class Scheduled: ${topic}`,
                 content: `An AI-led class on "${topic}" has been scheduled by ${user.name} for ${finalScheduleDate.toLocaleString()}. Please check the Live Classes page to join when it starts.`,
                 authorId: 'system',
                 authorName: 'Learnify System',
                 createdAt: serverTimestamp(),
+            };
+            addDoc(collection(firestore, 'announcements'), announcementData).catch(error => {
+                console.error("Failed to post announcement", error);
             });
 
              toast({ title: "Class Scheduled!", description: "Students will be notified. You can start it manually from this page." });
-        } catch (error: any) {
+        }).catch(error => {
+            const permissionError = new FirestorePermissionError({ path: classRef.path, operation: 'update', requestResourceData: classData }, error);
+            errorEmitter.emit('permission-error', permissionError);
             toast({ title: "Scheduling Failed", description: error.message, variant: "destructive" });
-        }
+        });
     });
   }
 
@@ -172,21 +187,33 @@ export default function AISuggestionsPage() {
         }
 
         const classRef = doc(firestore, 'liveClasses', classId);
-        await setDoc(classRef, {
+        const classData = {
             status: 'live',
             script: contentResult.data,
             audioUrl: audioResult.data.media,
             updatedAt: serverTimestamp(),
-        }, { merge: true });
+        };
+        await setDoc(classRef, classData, { merge: true })
+            .catch(error => {
+                const permissionError = new FirestorePermissionError({ path: classRef.path, operation: 'update', requestResourceData: classData }, error);
+                errorEmitter.emit('permission-error', permissionError);
+                throw error;
+            });
+
 
         // Save a copy to the recorded lectures collection
-        await addDoc(collection(firestore, 'recordedLectures'), {
+        const recordedLectureData = {
           topic: topic,
           script: contentResult.data,
           audioUrl: audioResult.data.media,
           createdAt: serverTimestamp(),
           teacherName: user.name,
-        });
+        };
+        await addDoc(collection(firestore, 'recordedLectures'), recordedLectureData)
+            .catch(error => {
+                 console.error("Failed to save recorded lecture", error);
+                 // Don't throw, main action succeeded
+            });
 
         toast({ title: 'Class Started!', description: 'The session is live and a copy has been saved to Recorded Lectures.' });
 
@@ -199,20 +226,20 @@ export default function AISuggestionsPage() {
   const handleEndOrCancelClass = async () => {
     if (!liveClass) return;
 
-    startProcessing(async () => {
+    startProcessing(() => {
         const classRef = doc(firestore, 'liveClasses', classId);
         const action = liveClass.status === 'live' ? 'Ended' : 'Canceled';
-        try {
-            await setDoc(classRef, {
-                status: 'ended',
-                topic: '',
-                script: null,
-                audioUrl: null,
-                duration: 30,
-                scheduledAt: null,
-                updatedAt: serverTimestamp(),
-            }, { merge: true });
-            
+        const classData = {
+            status: 'ended',
+            topic: '',
+            script: null,
+            audioUrl: null,
+            duration: 30,
+            scheduledAt: null,
+            updatedAt: serverTimestamp(),
+        };
+
+        setDoc(classRef, classData, { merge: true }).then(() => {
             setTopic('');
             setSelectedCourse('');
             setScheduledDate(undefined);
@@ -222,9 +249,11 @@ export default function AISuggestionsPage() {
                 title: `Class ${action}`,
                 description: `The session has been successfully ${action.toLowerCase()}.`,
             });
-        } catch (error) {
+        }).catch(error => {
+            const permissionError = new FirestorePermissionError({ path: classRef.path, operation: 'update', requestResourceData: classData }, error);
+            errorEmitter.emit('permission-error', permissionError);
             toast({ title: "Error", description: "Could not end or cancel the class session.", variant: 'destructive'});
-        }
+        });
     });
   }
 

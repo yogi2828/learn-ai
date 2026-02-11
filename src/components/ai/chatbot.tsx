@@ -16,6 +16,8 @@ import { useFirebase } from "@/firebase";
 import { addDoc, collection, serverTimestamp, query, onSnapshot, orderBy } from "firebase/firestore";
 import type { Message, RecordedLecture } from "@/lib/types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { errorEmitter } from "@/firebase/error-emitter";
+import { FirestorePermissionError } from "@/firebase/errors";
 
 
 export function ChatbotInterface() {
@@ -51,24 +53,28 @@ export function ChatbotInterface() {
             });
             setLectures(lecturesData);
             setLoadingLectures(false);
-        }, () => {
+        }, (error) => {
+            const permissionError = new FirestorePermissionError({ path: 'recordedLectures', operation: 'list' }, error);
+            errorEmitter.emit('permission-error', permissionError);
             setLoadingLectures(false);
         });
         return () => unsubscribe();
     }, [firestore]);
 
 
-    const saveChatSession = async (finalMessages: Message[]) => {
+    const saveChatSession = (finalMessages: Message[]) => {
         if (!user || finalMessages.length === 0) return;
-        try {
-            await addDoc(collection(firestore, 'chats'), {
-                userId: user.id,
-                messages: finalMessages,
-                createdAt: serverTimestamp(),
-            });
-        } catch (error) {
+        const chatData = {
+            userId: user.id,
+            messages: finalMessages,
+            createdAt: serverTimestamp(),
+        };
+        addDoc(collection(firestore, 'chats'), chatData)
+        .catch((error) => {
+            const permissionError = new FirestorePermissionError({ path: 'chats', operation: 'create', requestResourceData: chatData }, error);
+            errorEmitter.emit('permission-error', permissionError);
             console.error("Failed to save chat session:", error);
-        }
+        });
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -94,7 +100,7 @@ export function ChatbotInterface() {
                 const assistantMessage: Message = { role: 'assistant', content: result.data.answer };
                 const finalMessages = [...newMessages, assistantMessage];
                 setMessages(finalMessages);
-                await saveChatSession(finalMessages);
+                saveChatSession(finalMessages);
             } else {
                 toast({
                     title: "Error",

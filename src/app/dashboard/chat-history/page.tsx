@@ -10,6 +10,8 @@ import Link from 'next/link';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Bot, User as UserIcon, MessageSquareDashed, Loader2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 export default function ChatHistoryPage() {
   const { user } = useUser();
@@ -38,6 +40,10 @@ export default function ChatHistoryPage() {
       });
       setChatHistory(history);
       setLoading(false);
+    }, (error) => {
+        const permissionError = new FirestorePermissionError({ path: 'chats', operation: 'list' }, error);
+        errorEmitter.emit('permission-error', permissionError);
+        setLoading(false);
     });
 
     return () => unsubscribe();

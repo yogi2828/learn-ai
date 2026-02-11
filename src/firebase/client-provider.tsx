@@ -6,6 +6,7 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { firebaseConfig } from './config';
 import { FirebaseProvider } from './provider';
+import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 
 let firebaseApp;
 if (!getApps().length) {
@@ -21,6 +22,7 @@ const storage = getStorage(firebaseApp);
 export function FirebaseClientProvider({ children }: { children: ReactNode }) {
   return (
     <FirebaseProvider value={{ app: firebaseApp, auth, firestore, storage }}>
+      <FirebaseErrorListener />
       {children}
     </FirebaseProvider>
   );

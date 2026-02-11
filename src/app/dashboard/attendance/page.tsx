@@ -9,6 +9,8 @@ import { addDoc, collection, query, where, onSnapshot, serverTimestamp } from 'f
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 export default function AttendancePage() {
   const { user } = useUser();
@@ -32,6 +34,10 @@ export default function AttendancePage() {
     const unsubscribe = onSnapshot(attendanceQuery, (snapshot) => {
       setIsMarked(!snapshot.empty);
       setLoading(false);
+    }, (error) => {
+        const permissionError = new FirestorePermissionError({ path: 'attendance', operation: 'list' }, error);
+        errorEmitter.emit('permission-error', permissionError);
+        setLoading(false);
     });
 
     return () => unsubscribe();
@@ -39,25 +45,27 @@ export default function AttendancePage() {
 
   const handleMarkAttendance = () => {
     if (!user) return;
-    startTransition(async () => {
-      try {
-        await addDoc(collection(firestore, 'attendance'), {
+    startTransition(() => {
+        const attendanceData = {
           userId: user.id,
           userName: user.name,
           date: todayDateString,
           markedAt: serverTimestamp(),
+        };
+        addDoc(collection(firestore, 'attendance'), attendanceData).then(() => {
+            toast({
+              title: "Attendance Marked!",
+              description: "Your attendance for today has been recorded successfully.",
+            });
+        }).catch((error: any) => {
+            const permissionError = new FirestorePermissionError({ path: 'attendance', operation: 'create', requestResourceData: attendanceData }, error);
+            errorEmitter.emit('permission-error', permissionError);
+            toast({
+              title: "Error",
+              description: error.message || "Failed to mark attendance.",
+              variant: "destructive",
+            });
         });
-        toast({
-          title: "Attendance Marked!",
-          description: "Your attendance for today has been recorded successfully.",
-        });
-      } catch (error: any) {
-        toast({
-          title: "Error",
-          description: error.message || "Failed to mark attendance.",
-          variant: "destructive",
-        });
-      }
     });
   }
 

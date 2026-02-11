@@ -15,6 +15,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 export default function ManageUsersPage() {
     const { user, updateUserRole } = useUser();
@@ -44,6 +46,10 @@ export default function ManageUsersPage() {
                 usersData.push({ id: doc.id, ...doc.data() } as UserProfile);
             });
             setUsers(usersData);
+            setLoading(false);
+        }, (error) => {
+            const permissionError = new FirestorePermissionError({ path: 'users', operation: 'list' }, error);
+            errorEmitter.emit('permission-error', permissionError);
             setLoading(false);
         });
         return () => unsubscribe();

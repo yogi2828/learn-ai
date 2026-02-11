@@ -13,6 +13,8 @@ import { Megaphone, PlusCircle, Loader2 } from 'lucide-react';
 import type { Announcement } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 export default function AnnouncementsPage() {
   const { user } = useUser();
@@ -39,6 +41,10 @@ export default function AnnouncementsPage() {
       });
       setAnnouncements(announcementsData);
       setLoading(false);
+    }, (error) => {
+        const permissionError = new FirestorePermissionError({ path: 'announcements', operation: 'list' }, error);
+        errorEmitter.emit('permission-error', permissionError);
+        setLoading(false);
     });
     return () => unsubscribe();
   }, [firestore]);
@@ -54,21 +60,26 @@ export default function AnnouncementsPage() {
       return;
     }
 
-    startTransition(async () => {
-      try {
-        await addDoc(collection(firestore, 'announcements'), {
+    startTransition(() => {
+        const announcementData = {
           title,
           content,
           authorId: user?.id,
           authorName: user?.name,
           createdAt: serverTimestamp(),
+        };
+        const announcementsCollection = collection(firestore, 'announcements');
+
+        addDoc(announcementsCollection, announcementData).then(() => {
+            toast({ title: "Success", description: "Announcement has been posted." });
+            setDialogOpen(false);
+        }).catch((error) => {
+            // Path is unknown for addDoc, so we can't provide full context
+            console.error("Failed to create announcement:", error);
+            const permissionError = new FirestorePermissionError({ path: 'announcements', operation: 'create', requestResourceData: announcementData }, error);
+            errorEmitter.emit('permission-error', permissionError);
+            toast({ title: "Error", description: "Failed to post announcement.", variant: "destructive" });
         });
-        toast({ title: "Success", description: "Announcement has been posted." });
-        setDialogOpen(false);
-      } catch (error) {
-        console.error("Failed to create announcement:", error);
-        toast({ title: "Error", description: "Failed to post announcement.", variant: "destructive" });
-      }
     });
   };
 

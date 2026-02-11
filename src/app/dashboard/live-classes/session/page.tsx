@@ -11,6 +11,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { errorEmitter } from "@/firebase/error-emitter";
+import { FirestorePermissionError } from "@/firebase/errors";
 
 const classId = 'dsa-live-session';
 
@@ -37,6 +39,10 @@ export default function LiveClassSessionPage() {
             if(doc.exists()) {
                 setLiveClass(doc.data() as LiveClass);
             }
+            setLoading(false);
+        }, (error) => {
+            const permissionError = new FirestorePermissionError({ path: classRef.path, operation: 'get' }, error);
+            errorEmitter.emit('permission-error', permissionError);
             setLoading(false);
         });
         return () => unsubscribe();

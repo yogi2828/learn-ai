@@ -8,6 +8,8 @@ import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import type { RecordedLecture } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Bot } from 'lucide-react';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 const LectureSkeleton = () => (
     <div className="space-y-4">
@@ -35,7 +37,9 @@ export default function RecordedLecturesPage() {
             });
             setLectures(lecturesData);
             setLoading(false);
-        }, () => {
+        }, (error) => {
+            const permissionError = new FirestorePermissionError({ path: 'recordedLectures', operation: 'list' }, error);
+            errorEmitter.emit('permission-error', permissionError);
             setLoading(false);
         });
         return () => unsubscribe();

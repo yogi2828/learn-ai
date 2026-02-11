@@ -11,6 +11,8 @@ import type { AttendanceRecord } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useUser } from '@/components/user-provider';
 import { useRouter } from 'next/navigation';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 type GroupedAttendance = {
     [date: string]: AttendanceRecord[];
@@ -33,7 +35,7 @@ export default function ViewAttendancePage() {
     }, [user, isPrivilegedUser, router]);
 
     useEffect(() => {
-        if (!isPrivilegedUser) return;
+        if (!isPrivilegedUser || !firestore) return;
         const attendanceQuery = query(collection(firestore, "attendance"), orderBy("markedAt", "desc"));
         
         const unsubscribe = onSnapshot(attendanceQuery, (snapshot) => {
@@ -52,6 +54,10 @@ export default function ViewAttendancePage() {
             }, {} as GroupedAttendance);
 
             setGroupedRecords(grouped);
+            setLoading(false);
+        }, (error) => {
+            const permissionError = new FirestorePermissionError({ path: 'attendance', operation: 'list' }, error);
+            errorEmitter.emit('permission-error', permissionError);
             setLoading(false);
         });
 

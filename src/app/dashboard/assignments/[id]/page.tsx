@@ -19,6 +19,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 const AssignmentDetailSkeleton = () => (
     <div className="space-y-6">
@@ -83,7 +85,8 @@ export default function AssignmentDetailPage() {
             }
             setLoading(false);
         }, (e) => {
-            console.error(e);
+            const permissionError = new FirestorePermissionError({ path: assignmentRef.path, operation: 'get' }, e);
+            errorEmitter.emit('permission-error', permissionError);
             setError('Failed to load assignment details.');
             setLoading(false);
         });
@@ -98,6 +101,9 @@ export default function AssignmentDetailPage() {
                 } else {
                     setUserSubmission(null);
                 }
+            }, (e) => {
+                const permissionError = new FirestorePermissionError({ path: submissionRef.path, operation: 'get' }, e);
+                errorEmitter.emit('permission-error', permissionError);
             });
         }
 
@@ -107,6 +113,9 @@ export default function AssignmentDetailPage() {
                 const subs: Submission[] = [];
                 querySnap.forEach(doc => subs.push({id: doc.id, ...doc.data()} as Submission));
                 setSubmissions(subs);
+            }, (e) => {
+                const permissionError = new FirestorePermissionError({ path: `assignments/${assignmentId}/submissions`, operation: 'list' }, e);
+                errorEmitter.emit('permission-error', permissionError);
             });
         }
 
@@ -125,26 +134,25 @@ export default function AssignmentDetailPage() {
             return;
         }
 
-        startSubmitting(async () => {
-            try {
-                const submissionRef = doc(firestore, `assignments/${assignmentId}/submissions`, user.id);
-                
-                const submissionData: Omit<Submission, 'id'> = {
-                    studentId: user.id,
-                    studentName: user.name,
-                    submittedAt: serverTimestamp() as any,
-                    submissionContent: submissionContent,
-                    comments: comments,
-                    grade: 'Not Graded'
-                }
-                
-                await setDoc(submissionRef, submissionData);
-
-                toast({ title: "Success!", description: "Your assignment has been submitted." });
-            } catch (err: any) {
-                console.error(err);
-                toast({ title: 'Submission Failed', description: 'An error occurred while submitting.', variant: 'destructive' });
+        startSubmitting(() => {
+            const submissionRef = doc(firestore, `assignments/${assignmentId}/submissions`, user.id);
+            
+            const submissionData: Omit<Submission, 'id'> = {
+                studentId: user.id,
+                studentName: user.name,
+                submittedAt: serverTimestamp() as any,
+                submissionContent: submissionContent,
+                comments: comments,
+                grade: 'Not Graded'
             }
+            
+            setDoc(submissionRef, submissionData).then(() => {
+                toast({ title: "Success!", description: "Your assignment has been submitted." });
+            }).catch((err: any) => {
+                const permissionError = new FirestorePermissionError({ path: submissionRef.path, operation: 'create', requestResourceData: submissionData }, err);
+                errorEmitter.emit('permission-error', permissionError);
+                toast({ title: 'Submission Failed', description: 'An error occurred while submitting.', variant: 'destructive' });
+            });
         });
     }
 
@@ -162,16 +170,17 @@ export default function AssignmentDetailPage() {
             return;
         }
 
-        startUpdatingGrade(async () => {
+        startUpdatingGrade(() => {
             const submissionRef = doc(firestore, `assignments/${assignmentId}/submissions`, gradingSubmission.id);
-            try {
-                await updateDoc(submissionRef, { grade, feedback });
+            const gradeData = { grade, feedback };
+            updateDoc(submissionRef, gradeData).then(() => {
                 toast({ title: "Grade Submitted!", description: "The student's grade has been updated." });
                 setGradingDialogOpen(false);
-            } catch (err) {
-                console.error("Error submitting grade:", err);
+            }).catch((err) => {
+                const permissionError = new FirestorePermissionError({ path: submissionRef.path, operation: 'update', requestResourceData: gradeData }, err);
+                errorEmitter.emit('permission-error', permissionError);
                 toast({ title: "Error", description: "Failed to submit grade.", variant: "destructive" });
-            }
+            });
         });
     };
 

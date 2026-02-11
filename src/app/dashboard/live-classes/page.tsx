@@ -8,6 +8,8 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import type { LiveClass } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 export default function LiveClassesPage() {
     const { firestore } = useFirebase();
@@ -22,6 +24,10 @@ export default function LiveClassesPage() {
             if (doc.exists()) {
                 setLiveClass({ id: doc.id, ...doc.data() } as LiveClass);
             }
+            setLoading(false);
+        }, (error) => {
+            const permissionError = new FirestorePermissionError({ path: classRef.path, operation: 'get' }, error);
+            errorEmitter.emit('permission-error', permissionError);
             setLoading(false);
         });
 

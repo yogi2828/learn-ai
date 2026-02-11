@@ -19,6 +19,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { mockCourses } from '@/lib/mock-courses';
 import { Textarea } from '@/components/ui/textarea';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 export default function AssignmentsPage() {
     const { user } = useUser();
@@ -50,6 +52,10 @@ export default function AssignmentsPage() {
             } as Assignment));
             setAssignments(assignmentsData);
             setLoading(false);
+        }, (error) => {
+            const permissionError = new FirestorePermissionError({ path: 'assignments', operation: 'list' }, error);
+            errorEmitter.emit('permission-error', permissionError);
+            setLoading(false);
         });
 
         let unsubSubmissions: () => void = () => {};
@@ -68,6 +74,9 @@ export default function AssignmentsPage() {
                     }
                 });
                 setSubmittedAssignmentIds(ids);
+            }, (error) => {
+                const permissionError = new FirestorePermissionError({ path: 'submissions', operation: 'list' }, error);
+                errorEmitter.emit('permission-error', permissionError);
             });
         }
 
@@ -91,16 +100,16 @@ export default function AssignmentsPage() {
             return;
         }
 
-        startTransition(async () => {
-            try {
-                await addDoc(collection(firestore, 'assignments'), {
-                    title: newAssignmentTitle,
-                    course: course.title,
-                    courseId: newAssignmentCourse,
-                    dueDate: Timestamp.fromDate(newAssignmentDueDate),
-                    createdAt: serverTimestamp(),
-                    instructions: newAssignmentInstructions,
-                });
+        startTransition(() => {
+            const assignmentData = {
+                title: newAssignmentTitle,
+                course: course.title,
+                courseId: newAssignmentCourse,
+                dueDate: Timestamp.fromDate(newAssignmentDueDate),
+                createdAt: serverTimestamp(),
+                instructions: newAssignmentInstructions,
+            };
+            addDoc(collection(firestore, 'assignments'), assignmentData).then(() => {
                 toast({ title: "Success", description: "Assignment created successfully." });
                 setDialogOpen(false);
                 // Reset form
@@ -108,10 +117,11 @@ export default function AssignmentsPage() {
                 setNewAssignmentCourse('');
                 setNewAssignmentDueDate(undefined);
                 setNewAssignmentInstructions('');
-            } catch (error) {
-                console.error("Failed to create assignment:", error);
+            }).catch((error) => {
+                const permissionError = new FirestorePermissionError({ path: 'assignments', operation: 'create', requestResourceData: assignmentData }, error);
+                errorEmitter.emit('permission-error', permissionError);
                 toast({ title: "Error", description: "Failed to create assignment.", variant: "destructive" });
-            }
+            });
         });
     };
 
