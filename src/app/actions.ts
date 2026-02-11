@@ -19,6 +19,9 @@ function getFriendlyErrorMessage(error: any, defaultMessage: string): string {
     if (message.includes('deadline')) {
         return 'The request to the AI model timed out. This can happen during peak hours. Please try again.';
     }
+    if (message.includes('429') || message.toLowerCase().includes('quota exceeded')) {
+        return 'You have exceeded the request limit for the free tier of the AI model. Please wait a few moments before trying again.';
+    }
     return message;
 }
 

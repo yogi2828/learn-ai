@@ -59,28 +59,16 @@ const generateLectureContentFlow = ai.defineFlow(
         throw new Error(`The AI returned an invalid data format for the lecture text.`);
     }
     
-    // 2. Generate an image for each section and build the new sections array
-    const sectionsWithImages = await Promise.all(
-      lectureText.sections.map(async (section) => {
-        try {
-          const imagePrompt = `A visually engaging and educational illustration for a computer science lecture section titled "${section.heading}". The content is about: "${section.content}". The image should be an abstract, conceptual, and simple vector-style graphic suitable for a presentation slide. Do not include any text in the image.`;
-          const { media } = await ai.generate({
-            model: 'googleai/imagen-4.0-fast-generate-001',
-            prompt: imagePrompt,
-          });
-          return { ...section, imageUrl: media.url };
-        } catch (e) {
-          console.error(`Failed to generate image for section "${section.heading}":`, e);
-          // Return the section without an image on error, which is valid for the optional imageUrl field
-          return { ...section, imageUrl: undefined };
-        }
-      })
-    );
+    // 2. Map sections to the output format without adding images to avoid hitting API rate limits.
+    const sectionsWithoutImages = lectureText.sections.map(section => ({
+      ...section,
+      imageUrl: undefined,
+    }));
     
     // Construct the final output object that matches GenerateLectureContentOutputSchema
     const finalLecture: GenerateLectureContentOutput = {
       ...lectureText,
-      sections: sectionsWithImages,
+      sections: sectionsWithoutImages,
     };
     
     return finalLecture;
