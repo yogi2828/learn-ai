@@ -7,6 +7,19 @@ export const GenerateLectureContentInputSchema = z.object({
 });
 export type GenerateLectureContentInput = z.infer<typeof GenerateLectureContentInputSchema>;
 
+// This schema is for the prompt that generates ONLY text content.
+export const GenerateLectureTextContentSchema = z.object({
+  title: z.string().describe("A concise and engaging title for the lecture."),
+  introduction: z.string().describe("A brief introduction to the lecture topic."),
+  sections: z.array(z.object({
+      heading: z.string().describe("The heading for this section of the lecture."),
+      content: z.string().describe("The detailed content for this section."),
+  })).describe("An array of lecture sections, each with a heading and content."),
+  conclusion: z.string().describe("A concluding summary of the lecture."),
+});
+export type GenerateLectureTextContent = z.infer<typeof GenerateLectureTextContentSchema>;
+
+// This schema is for the final output of the flow, AFTER images have been added.
 export const GenerateLectureContentOutputSchema = z.object({
   title: z.string().describe("A concise and engaging title for the lecture."),
   introduction: z.string().describe("A brief introduction to the lecture topic."),
