@@ -3,73 +3,73 @@
     {
       "id": "hero-classroom",
       "description": "A modern, bright classroom with students learning.",
-      "imageUrl": "https://images.unsplash.com/photo-1601339434203-130259102db6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjbGFzc3Jvb20lMjBsZWFybmluZ3xlbnwwfHx8fDE3Njg3MzUwMDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1759922378123-a1f4f1e39bae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjbGFzc3Jvb20lMjBsZWFybmluZ3xlbnwwfHx8fDE3NzA4MTEwNzV8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "classroom learning"
     },
     {
       "id": "auth-background",
       "description": "An abstract background with geometric shapes related to technology and education.",
-      "imageUrl": "https://images.unsplash.com/photo-1501504905252-473c47e087f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZWR1Y2F0aW9uJTIwdGVjaG5vbG9neXxlbnwwfHx8fDE3Njg3MDcwNTZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1501504905252-473c47e087f8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxlZHVjYXRpb24lMjB0ZWNobm9sb2d5fGVufDB8fHx8MTc3MDcwNjc5OHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "education technology"
     },
     {
       "id": "student-avatar-1",
       "description": "Avatar for a student.",
-      "imageUrl": "https://images.unsplash.com/photo-1729824186570-4d4aede00043?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzdHVkZW50JTIwYXZhdGFyfGVufDB8fHx8MTc2ODczNTAwNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1646415753793-dcfda1dfeee3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzdHVkZW50JTIwYXZhdGFyfGVufDB8fHx8MTc3MDc1MTA1MHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "student avatar"
     },
     {
       "id": "student-avatar-2",
       "description": "Avatar for a female student.",
-      "imageUrl": "https://images.unsplash.com/photo-1646415753793-dcfda1dfeee3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzdHVkZW50JTIwYXZhdGFyfGVufDB8fHx8MTc2ODczNTAwNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1698356253803-838dceb68946?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzdHVkZW50JTIwYXZhdGFyfGVufDB8fHx8MTc3MDc1MTA1MHww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "student avatar"
     },
     {
       "id": "teacher-avatar-1",
       "description": "Avatar for a teacher.",
-      "imageUrl": "https://images.unsplash.com/photo-1652795385761-7ac287d0cd03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx0ZWFjaGVyJTIwYXZhdGFyfGVufDB8fHx8MTc2ODczNTAwNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1625262550495-1d3bfb5c1502?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx0ZWFjaGVyJTIwYXZhdGFyfGVufDB8fHx8MTc3MDc4ODEzNnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "teacher avatar"
     },
     {
       "id": "teacher-avatar-2",
       "description": "Avatar for a male teacher.",
-      "imageUrl": "https://images.unsplash.com/photo-1625262550495-1d3bfb5c1502?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx0ZWFjaGVyJTIwYXZhdGFyfGVufDB8fHx8MTc2ODczNTAwNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1729824186570-4d4aede00043?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx0ZWFjaGVyJTIwYXZhdGFyfGVufDB8fHx8MTc3MDc4ODEzNnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "teacher avatar"
     },
     {
       "id": "admin-avatar-1",
       "description": "Avatar for an admin.",
-      "imageUrl": "https://images.unsplash.com/photo-1648526607833-aa72324d06a8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YWRtaW4lMjBhdmF0YXJ8ZW58MHx8fHwxNzY4NzM1MDA2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1648526605941-d87e594f24f7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhZG1pbiUyMGF2YXRhcnxlbnwwfHx8fDE3NzA4MTEwNzZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "admin avatar"
     },
     {
       "id": "about-us-hero",
       "description": "A diverse team collaborating in a modern office.",
-      "imageUrl": "https://images.unsplash.com/photo-1527525443983-6e60c75fff46?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxkaXZlcnNlJTIwdGVhbXxlbnwwfHx8fDE3Njg3MjQ5NzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxkaXZlcnNlJTIwdGVhbXxlbnwwfHx8fDE3NzA3MjA1ODR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "diverse team"
     },
     {
-      "id": "course-android",
-      "description": "An abstract image representing Android development.",
-      "imageUrl": "https://images.unsplash.com/photo-1767716134775-6787d0def70c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhbmRyb2lkJTIwZGV2ZWxvcG1lbnR8ZW58MHx8fHwxNzcwODEwOTI4fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "android development"
+      "id": "course-android-1",
+      "description": "An abstract image representing Android development with code.",
+      "imageUrl": "https://images.unsplash.com/photo-1603354350266-a8de3496163b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxhbmRyb2lkJTIwY29kZXxlbnwwfHx8fDE3NzA4MTA3NjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "android code"
     },
     {
-      "id": "course-python",
-      "description": "An abstract image representing Python programming.",
-      "imageUrl": "https://images.unsplash.com/photo-1649180556628-9ba704115795?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxweXRob24lMjBwcm9ncmFtbWluZ3xlbnwwfHx8fDE3NzA3ODY0OTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "python programming"
+      "id": "course-python-1",
+      "description": "An abstract image representing Python programming with code.",
+      "imageUrl": "https://images.unsplash.com/photo-1551033406-611cf9a28f67?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxweXRob24lMjBjb2RlfGVufDB8fHx8MTc3MDgwMzIyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "python code"
     },
     {
-      "id": "course-cyber",
-      "description": "An abstract image representing cybersecurity.",
-      "imageUrl": "https://images.unsplash.com/photo-1618060932014-4deda4932554?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjeWJlciUyMHNlY3VyaXR5fGVufDB8fHx8MTc3MDczMDExMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "id": "course-cyber-1",
+      "description": "An abstract image representing cybersecurity with a lock.",
+      "imageUrl": "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjeWJlciUyMHNlY3VyaXR5fGVufDB8fHx8MTc3MDczMDExMnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cyber security"
     },
     {
-      "id": "course-dcn",
+      "id": "course-dcn-1",
       "description": "An abstract image representing data communication and networking.",
-      "imageUrl": "https://images.unsplash.com/photo-1676565415271-764dc0f46a79?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxkYXRhJTIwbmV0d29ya2luZ3xlbnwwfHx8fDE3NzA4MTA5Mjd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1738082956254-1dd63ad1db71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8ZGF0YSUyMG5ldHdvcmtpbmd8ZW58MHx8fHwxNzcwODEwOTI3fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "data networking"
     }
   ]
