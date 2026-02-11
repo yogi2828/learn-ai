@@ -8,7 +8,6 @@
  */
 
 import {ai} from '@/ai/genkit';
-import { googleAI } from '@genkit-ai/google-genai';
 import { 
   GenerateLectureContentInput, 
   GenerateLectureContentInputSchema,
@@ -63,7 +62,7 @@ const generateLectureContentFlow = ai.defineFlow(
       try {
         const imagePrompt = `A visually engaging and educational illustration for a computer science lecture section titled "${section.heading}". The content is about: "${section.content}". The image should be an abstract, conceptual, and simple vector-style graphic suitable for a presentation slide. Do not include any text in the image.`;
         const { media } = await ai.generate({
-          model: googleAI.model('imagen-4.0-fast-generate-001'),
+          model: 'googleai/imagen-4.0-fast-generate-001',
           prompt: imagePrompt,
         });
         if (media.url) {
