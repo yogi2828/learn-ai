@@ -51,25 +51,25 @@
     {
       "id": "course-android",
       "description": "An abstract image representing Android development.",
-      "imageUrl": "https://images.unsplash.com/photo-1653836592205-d80d575d6b3c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhbmRyb2lkJTIwY29kZXxlbnwwfHx8fDE3NzA4MTA3NjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1617042375876-a92e62bf8b4c?w=800&h=600&fit=crop&q=80",
       "imageHint": "android code"
     },
     {
       "id": "course-python",
       "description": "An abstract image representing Python programming.",
-      "imageUrl": "https://images.unsplash.com/photo-1518773553398-650c184e0bb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxweXRob24lMjBjb2RlfGVufDB8fHx8MTc3MDgwMzIyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800&h=600&fit=crop&q=80",
       "imageHint": "python code"
     },
     {
       "id": "course-cyber",
       "description": "An abstract image representing cybersecurity.",
-      "imageUrl": "https://images.unsplash.com/photo-1768839721176-2fa91fdce725?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjeWJlcnNlY3VyaXR5JTIwbG9ja3xlbnwwfHx8fDE3NzA4MTA3NjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1544256718-3b62ff080b94?w=800&h=600&fit=crop&q=80",
       "imageHint": "cybersecurity lock"
     },
     {
       "id": "course-dcn",
       "description": "An abstract image representing data communication and networking.",
-      "imageUrl": "https://images.unsplash.com/photo-1644325349124-d1756b79dd42?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bmV0d29yayUyMGRhdGF8ZW58MHx8fHwxNzcwODEwNzYxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&h=600&fit=crop&q=80",
       "imageHint": "network data"
     }
   ]
