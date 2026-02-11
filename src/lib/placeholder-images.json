@@ -50,27 +50,27 @@
     },
     {
       "id": "course-android",
-      "description": "An image showing Android Studio code for Jetpack Compose.",
-      "imageUrl": "https://images.unsplash.com/photo-1617999192233-59e64a514838?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxhbmRyb2lkJTIwZGV2ZWxvcG1lbnR8ZW58MHx8fHwxNzIxODMzOTU0fDA&ixlib=rb-4.0.3&q=80&w=1080",
-      "imageHint": "android development"
+      "description": "An abstract image representing Android development.",
+      "imageUrl": "https://images.unsplash.com/photo-1653836592205-d80d575d6b3c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxhbmRyb2lkJTIwY29kZXxlbnwwfHx8fDE3NzA4MTA3NjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "android code"
     },
     {
       "id": "course-python",
-      "description": "An image showing Python code on a dark-themed editor.",
-      "imageUrl": "https://images.unsplash.com/photo-1629904853716-f0bc642d4760?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxweXRob24lMjBjb2Rpbmd8ZW58MHx8fHwxNzIxODMzOTc4fDA&ixlib=rb-4.0.3&q=80&w=1080",
-      "imageHint": "python coding"
+      "description": "An abstract image representing Python programming.",
+      "imageUrl": "https://images.unsplash.com/photo-1518773553398-650c184e0bb3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxweXRob24lMjBjb2RlfGVufDB8fHx8MTc3MDgwMzIyMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "python code"
     },
     {
       "id": "course-cyber",
-      "description": "An abstract image with a padlock and binary code, representing cybersecurity.",
-      "imageUrl": "https://images.unsplash.com/photo-1550751827-4138d0e2ca8c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjeWJlcnNlY3VyaXR5fGVufDB8fHx8MTcyMTg4MjU4NHww&ixlib=rb-4.0.3&q=80&w=1080",
+      "description": "An abstract image representing cybersecurity.",
+      "imageUrl": "https://images.unsplash.com/photo-1768839721176-2fa91fdce725?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjeWJlcnNlY3VyaXR5JTIwbG9ja3xlbnwwfHx8fDE3NzA4MTA3NjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "cybersecurity lock"
     },
     {
       "id": "course-dcn",
-      "description": "A photo of a server room with glowing network switches and cables.",
-      "imageUrl": "https://images.unsplash.com/photo-1593432336332-7a7d454c7379?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxuZXR3b3JrJTIwc2VydmVyfGVufDB8fHx8MTcyMTg4MjYxNnww&ixlib=rb-4.0.3&q=80&w=1080",
-      "imageHint": "network server"
+      "description": "An abstract image representing data communication and networking.",
+      "imageUrl": "https://images.unsplash.com/photo-1644325349124-d1756b79dd42?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bmV0d29yayUyMGRhdGF8ZW58MHx8fHwxNzcwODEwNzYxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "network data"
     }
   ]
 }
