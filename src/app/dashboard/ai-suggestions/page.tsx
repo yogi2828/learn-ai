@@ -146,7 +146,7 @@ export default function AISuggestionsPage() {
 
             const announcementData = {
                 title: `New AI Class Scheduled: ${topic}`,
-                content: `An AI-led class on "${topic}" has been scheduled by ${user.name} for ${finalScheduleDate.toLocaleString()}. Please check the Live Classes page to join when it starts.`,
+                content: `An AI-led class on "${topic}" has been scheduled by ${user.name} for ${format(finalScheduleDate, 'PPP p')}. Please check the Live Classes page to join when it starts.`,
                 authorId: 'system',
                 authorName: 'Learnify System',
                 createdAt: serverTimestamp(),
@@ -166,23 +166,24 @@ export default function AISuggestionsPage() {
 
   const handleStartLiveClass = () => {
     if (!liveClass || !liveClass.topic || !liveClass.duration) return;
-    const { topic, duration } = liveClass;
+    const { topic, duration, teacherName } = liveClass;
 
     startProcessing(async () => {
       try {
-        toast({ title: 'AI Teacher is Preparing', description: 'Generating lecture script and visuals... This may take a moment.' });
+        toast({ title: 'AI Teacher is Preparing', description: 'Generating lecture script and audio... This may take a moment.' });
+        
         const contentResult = await getLectureContent(topic, duration);
         if (!contentResult.success || !contentResult.data) {
           throw new Error(contentResult.error || 'Failed to generate lecture content.');
         }
 
-        toast({ title: 'Almost Ready', description: 'Generating lecture audio...' });
         const script = [
             `Title: ${contentResult.data.title}`,
             `Introduction: ${contentResult.data.introduction}`,
             ...contentResult.data.sections.map(s => `${s.heading}. ${s.content}`),
             `Conclusion: ${contentResult.data.conclusion}`
         ].join('\n\n');
+
         const audioResult = await getRecordedLecture(script);
         if (!audioResult.success || !audioResult.data) {
           throw new Error(audioResult.error || 'Failed to generate lecture audio.');
@@ -202,6 +203,17 @@ export default function AISuggestionsPage() {
                 throw error;
             });
 
+        // Send notification when class starts
+        const announcementData = {
+            title: `Class is Live: ${topic}`,
+            content: `The AI-led class on "${topic}" by ${teacherName} has started. Join now from the Live Classes page!`,
+            authorId: 'system',
+            authorName: 'Learnify System',
+            createdAt: serverTimestamp(),
+        };
+        await addDoc(collection(firestore, 'announcements'), announcementData).catch(error => {
+            console.error("Failed to post 'class live' announcement", error);
+        });
 
         // Save a copy to the recorded lectures collection
         const recordedLectureData = {
@@ -217,7 +229,7 @@ export default function AISuggestionsPage() {
                  // Don't throw, main action succeeded
             });
 
-        toast({ title: 'Class Started!', description: 'The session is live and a copy has been saved to Recorded Lectures.' });
+        toast({ title: 'Class Started!', description: 'The session is live, students have been notified, and a copy has been saved.' });
 
       } catch (error: any) {
          toast({ title: "Generation Failed", description: error.message, variant: "destructive" });
@@ -231,6 +243,8 @@ export default function AISuggestionsPage() {
     startProcessing(async () => {
         const classRef = doc(firestore, 'liveClasses', classId);
         const action = liveClass.status === 'live' ? 'Ended' : 'Canceled';
+        const originalTopic = liveClass.topic;
+        
         const classData = {
             status: 'ended',
             topic: '',
@@ -243,10 +257,19 @@ export default function AISuggestionsPage() {
 
         try {
             await setDoc(classRef, classData, { merge: true });
-            setTopic('');
-            setSelectedCourse('');
-            setScheduledDate(undefined);
-            setScheduledTime('');
+
+            if (action === 'Canceled' && originalTopic) {
+                const announcementData = {
+                    title: `AI Class Canceled: ${originalTopic}`,
+                    content: `The AI-led class on "${originalTopic}" has been canceled by the teacher.`,
+                    authorId: 'system',
+                    authorName: 'Learnify System',
+                    createdAt: serverTimestamp(),
+                };
+                addDoc(collection(firestore, 'announcements'), announcementData).catch(error => {
+                    console.error("Failed to post cancellation announcement", error);
+                });
+            }
             
             toast({
                 title: `Class ${action}`,
