@@ -2,7 +2,7 @@
 /**
  * @fileOverview This file defines a Genkit flow for generating structured lecture content from a given topic.
  *
- * - `generateLectureContent`: A function that takes a topic and duration as input and returns structured lecture content with visuals.
+ * - `generateLectureContent`: A function that takes a topic and duration as input and returns structured lecture content.
  * - `GenerateLectureContentInput`: The input type for the `generateLectureContent` function.
  * - `GenerateLectureContentOutput`: The output type for the `generateLectureContent` function.
  */
@@ -13,8 +13,6 @@ import {
   GenerateLectureContentInputSchema,
   GenerateLectureContentOutput, 
   GenerateLectureContentOutputSchema,
-  GenerateLectureTextContent,
-  GenerateLectureTextContentSchema
 } from '@/lib/types';
 
 export async function generateLectureContent(
@@ -26,13 +24,15 @@ export async function generateLectureContent(
 const lecturePrompt = ai.definePrompt({
   name: 'generateLectureContentPrompt',
   input: { schema: GenerateLectureContentInputSchema },
-  output: { schema: GenerateLectureTextContentSchema },
+  output: { schema: GenerateLectureContentOutputSchema },
   system: 'You are an AI assistant. You MUST produce a valid JSON object that adheres to the provided output schema. Do not add any extra text or formatting outside of the JSON structure.',
   prompt: `You are an AI assistant designed to generate structured lecture content for teachers.
 
 Based on the given topic, create a single cohesive lecture with a title, introduction, several sections (each with a heading and content), and a conclusion. 
 The lecture should be comprehensive, well-organized, and suitable for a presentation of approximately {{duration}} minutes.
 If multiple topics are provided, synthesize them into a coherent structure.
+
+IMPORTANT: Do NOT generate values for the 'imageUrl' field. This field should not be present in the output. Only text content should be generated.
 
 Topic(s): {{{topic}}}
 `,
@@ -54,24 +54,22 @@ const generateLectureContentFlow = ai.defineFlow(
   },
   async (input: GenerateLectureContentInput): Promise<GenerateLectureContentOutput> => {
     // 1. Generate the text content
-    const { output: lectureText } = await lecturePrompt(input);
+    const { output } = await lecturePrompt(input);
     
-    if (!lectureText) {
-        throw new Error(`The AI returned an invalid data format for the lecture text.`);
+    if (!output) {
+        throw new Error(`The AI returned an invalid or empty data format for the lecture text.`);
     }
     
-    // 2. Map sections to the output format without adding images to avoid hitting API rate limits.
-    const sectionsWithoutImages = lectureText.sections.map(section => ({
-      ...section,
+    // 2. Ensure imageUrls are not present, even if the model hallucinates them.
+    const sectionsWithoutImages = output.sections.map(section => ({
+      heading: section.heading,
+      content: section.content,
       imageUrl: undefined,
     }));
     
-    // Construct the final output object that matches GenerateLectureContentOutputSchema
-    const finalLecture: GenerateLectureContentOutput = {
-      ...lectureText,
-      sections: sectionsWithoutImages,
+    return {
+        ...output,
+        sections: sectionsWithoutImages,
     };
-    
-    return finalLecture;
   }
 );
