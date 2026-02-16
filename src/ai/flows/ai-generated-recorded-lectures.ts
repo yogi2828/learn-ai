@@ -42,38 +42,30 @@ const generateRecordedLectureFlow = ai.defineFlow(
     outputSchema: RecordedLectureOutputSchema,
   },
   async (input: RecordedLectureInput) => {
+    // Truncate script to a reasonable length to avoid hitting API limits for TTS
+    const MAX_SCRIPT_LENGTH = 4800; // Gemini TTS has a 5000 character limit, this is a safe buffer
+    const truncatedScript = input.script.length > MAX_SCRIPT_LENGTH 
+      ? input.script.substring(0, MAX_SCRIPT_LENGTH) 
+      : input.script;
+
+    if (input.script.length > MAX_SCRIPT_LENGTH) {
+      console.warn(`Warning: The lecture script was too long and was truncated to ${MAX_SCRIPT_LENGTH} characters for audio generation.`);
+    }
+
     const { media } = await ai.generate({
       model: googleAI.model('gemini-2.5-flash-preview-tts'),
       config: {
         responseModalities: ['AUDIO'],
         speechConfig: {
           voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: 'Algenib' },
+            prebuiltVoiceConfig: { voiceName: 'Hadar' }, // Using a different voice for a better experience
           },
         },
-        safetySettings: [
-          {
-            category: 'HARM_CATEGORY_HATE_SPEECH',
-            threshold: 'BLOCK_ONLY_HIGH',
-          },
-          {
-            category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
-            threshold: 'BLOCK_ONLY_HIGH',
-          },
-          {
-            category: 'HARM_CATEGORY_HARASSMENT',
-            threshold: 'BLOCK_ONLY_HIGH',
-          },
-          {
-            category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-            threshold: 'BLOCK_ONLY_HIGH',
-          },
-        ],
       },
-      prompt: input.script,
+      prompt: truncatedScript,
     });
     if (!media) {
-      throw new Error('no media returned');
+      throw new Error('No audio media was returned from the AI model. The TTS generation failed.');
     }
     const audioBuffer = Buffer.from(
       media.url.substring(media.url.indexOf(',') + 1),
