@@ -297,7 +297,7 @@ export default function AISuggestionsPage() {
             )}
             {(isClassLive || isClassScheduled) && (
                 <Button onClick={handleEndOrCancelClass} variant="destructive" className="w-40" disabled={isProcessing}>
-                    {isProcessing && liveClass?.status !== 'scheduled' ? <Loader2 className="animate-spin" /> : isClassLive ? <><Power className="mr-2" /> End Class</> : <><XCircle className="mr-2" /> Cancel</>}
+                    {isProcessing ? <Loader2 className="animate-spin" /> : (isClassLive ? <><Power className="mr-2" /> End Class</> : <><XCircle className="mr-2" /> Cancel</>)}
                 </Button>
             )}
         </div>

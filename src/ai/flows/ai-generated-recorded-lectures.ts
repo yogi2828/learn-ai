@@ -58,7 +58,7 @@ const generateRecordedLectureFlow = ai.defineFlow(
         responseModalities: ['AUDIO'],
         speechConfig: {
           voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: 'Algenib' }, // Using a different voice for a better experience
+            prebuiltVoiceConfig: { voiceName: 'Achernar' }, // Using a new stable voice for a better experience
           },
         },
       },
