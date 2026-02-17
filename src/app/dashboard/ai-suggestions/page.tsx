@@ -152,6 +152,8 @@ export default function AISuggestionsPage() {
                 createdAt: serverTimestamp(),
             };
             addDoc(collection(firestore, 'announcements'), announcementData).catch(error => {
+                const permissionError = new FirestorePermissionError({ path: 'announcements', operation: 'create', requestResourceData: announcementData }, error);
+                errorEmitter.emit('permission-error', permissionError);
                 console.error("Failed to post announcement", error);
             });
 
@@ -212,6 +214,8 @@ export default function AISuggestionsPage() {
             createdAt: serverTimestamp(),
         };
         await addDoc(collection(firestore, 'announcements'), announcementData).catch(error => {
+            const permissionError = new FirestorePermissionError({ path: 'announcements', operation: 'create', requestResourceData: announcementData }, error);
+            errorEmitter.emit('permission-error', permissionError);
             console.error("Failed to post 'class live' announcement", error);
         });
 
@@ -225,6 +229,8 @@ export default function AISuggestionsPage() {
         };
         await addDoc(collection(firestore, 'recordedLectures'), recordedLectureData)
             .catch(error => {
+                 const permissionError = new FirestorePermissionError({ path: 'recordedLectures', operation: 'create', requestResourceData: recordedLectureData }, error);
+                 errorEmitter.emit('permission-error', permissionError);
                  console.error("Failed to save recorded lecture", error);
                  // Don't throw, main action succeeded
             });
@@ -267,6 +273,8 @@ export default function AISuggestionsPage() {
                     createdAt: serverTimestamp(),
                 };
                 addDoc(collection(firestore, 'announcements'), announcementData).catch(error => {
+                    const permissionError = new FirestorePermissionError({ path: 'announcements', operation: 'create', requestResourceData: announcementData }, error);
+                    errorEmitter.emit('permission-error', permissionError);
                     console.error("Failed to post cancellation announcement", error);
                 });
             }

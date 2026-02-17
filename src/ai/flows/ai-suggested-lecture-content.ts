@@ -61,10 +61,9 @@ const generateLectureContentFlow = ai.defineFlow(
     }
     
     // 2. Ensure imageUrls are not present, even if the model hallucinates them.
-    const sectionsWithoutImages = output.sections.map(section => ({
-      heading: section.heading,
-      content: section.content,
-      imageUrl: undefined,
+    const sectionsWithoutImages = output.sections.map(({ heading, content }) => ({
+      heading,
+      content,
     }));
     
     return {
