@@ -1,5 +1,5 @@
 'use client';
-import { useState, useTransition, useEffect } from 'react';
+import { useState, useTransition, useEffect, FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { getLectureContent } from '@/app/actions';
@@ -14,10 +14,11 @@ import { cn } from '@/lib/utils';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const DEMO_CLASS_ID = 'ai-demo-class';
-const DEMO_LECTURE_TOPIC = "The Fundamentals of Data Communication and Networking";
-const DEMO_LECTURE_DURATION = 15;
 
 export default function AITeacherStudioPage() {
   const { user } = useUser();
@@ -27,6 +28,10 @@ export default function AITeacherStudioPage() {
   const [liveClass, setLiveClass] = useState<LiveClass | null>(null);
   const [statusMessage, setStatusMessage] = useState('Idle');
   const { toast } = useToast();
+
+  const [topic, setTopic] = useState('The Fundamentals of Data Communication and Networking');
+  const [duration, setDuration] = useState(15);
+
 
   useEffect(() => {
     if (user && user.role === 'student') {
@@ -55,13 +60,19 @@ export default function AITeacherStudioPage() {
     return null;
   }
 
-  const handleStartClass = () => {
+  const handleStartClass = (e: FormEvent) => {
+    e.preventDefault();
+    if (!topic) {
+        toast({ title: "Topic required", description: "Please enter a topic for the demonstration.", variant: "destructive" });
+        return;
+    }
+    
     startProcessing(async () => {
       try {
         setStatusMessage('Generating lecture script...');
         toast({ title: 'AI Teacher is Preparing...', description: 'Generating lecture script. This may take a moment.' });
         
-        const contentResult = await getLectureContent(DEMO_LECTURE_TOPIC, DEMO_LECTURE_DURATION);
+        const contentResult = await getLectureContent(topic, duration);
         if (!contentResult.success || !contentResult.data) {
           throw new Error(contentResult.error || 'Failed to generate lecture script.');
         }
@@ -71,8 +82,8 @@ export default function AITeacherStudioPage() {
         const classData: LiveClass = {
             id: DEMO_CLASS_ID,
             status: 'live',
-            topic: DEMO_LECTURE_TOPIC,
-            duration: DEMO_LECTURE_DURATION,
+            topic: topic,
+            duration: duration,
             title: contentResult.data.title,
             description: "An AI-led demonstration class.",
             script: contentResult.data,
@@ -82,8 +93,8 @@ export default function AITeacherStudioPage() {
         await setDoc(classRef, classData);
 
         const announcementData = {
-            title: `AI Demo Class is Live: ${DEMO_LECTURE_TOPIC}`,
-            content: `The AI Teacher has started a demonstration class on "${DEMO_LECTURE_TOPIC}". Join now from the Live Classes page!`,
+            title: `AI Demo Class is Live: ${topic}`,
+            content: `The AI Teacher has started a demonstration class on "${topic}". Join now from the Live Classes page!`,
             authorId: 'system',
             authorName: 'Learnify System',
             createdAt: serverTimestamp(),
@@ -137,7 +148,7 @@ export default function AITeacherStudioPage() {
             <Bot className="h-4 w-4" />
             <AlertTitle>How it Works</AlertTitle>
             <AlertDescription>
-                Clicking &quot;Start Demonstration&quot; triggers the AI to generate a full lecture script, starts a live class session, and notifies all students. The lecture audio is generated in real-time on the student&apos;s device.
+                Enter a topic, choose a duration, and click &quot;Start Demonstration&quot;. The AI will generate a lecture script, start a live class, and notify all students.
             </AlertDescription>
         </Alert>
 
@@ -148,7 +159,7 @@ export default function AITeacherStudioPage() {
                     Use this panel to manage the AI demonstration class.
                 </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6 text-center">
+            <CardContent className="space-y-6">
                 <div className={cn(
                     "flex items-center justify-center p-4 rounded-lg",
                     isClassLive ? "bg-green-100 dark:bg-green-900/30" : "bg-red-100 dark:bg-red-900/30"
@@ -157,43 +168,75 @@ export default function AITeacherStudioPage() {
                     <p className="font-semibold">
                         Demonstration Status: 
                         <span className={cn("ml-1 font-bold", isClassLive ? "text-green-600 dark:text-green-300" : "text-red-600 dark:text-red-400")}>
-                            {isClassLive ? 'LIVE' : 'NOT RUNNING'}
+                             {liveClass?.topic && isClassLive ? `${liveClass.topic} - LIVE` : (isClassLive ? 'LIVE' : 'NOT RUNNING')}
                         </span>
                     </p>
                 </div>
-
-                <div className="flex flex-col items-center gap-4">
-                  {!isClassLive ? (
-                     <Button onClick={handleStartClass} size="lg" disabled={isProcessing}>
-                        {isProcessing ? (
-                          <>
-                            <Loader2 className="animate-spin mr-2" />
-                            {statusMessage}...
-                          </>
-                        ) : (
-                          <>
-                           <Play className="mr-2" />
-                           Start Demonstration
-                          </>
-                        )}
-                    </Button>
-                  ) : (
-                    <Button onClick={handleEndClass} variant="destructive" size="lg" disabled={isProcessing}>
-                        {isProcessing ? (
-                          <>
-                            <Loader2 className="animate-spin mr-2" />
-                            {statusMessage}...
-                          </>
-                        ) : (
-                           <>
-                             <StopCircle className="mr-2" />
-                             End Demonstration
-                           </>
-                        )}
-                    </Button>
-                  )}
-                  {isProcessing && <p className="text-sm text-muted-foreground animate-pulse">{statusMessage}</p>}
-                </div>
+                
+                {!isClassLive ? (
+                    <form onSubmit={handleStartClass} className="space-y-4 pt-4 border-t">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+                            <div className="md:col-span-2 space-y-2">
+                                <Label htmlFor="topic">Lecture Topic</Label>
+                                <Input 
+                                    id="topic" 
+                                    value={topic} 
+                                    onChange={(e) => setTopic(e.target.value)} 
+                                    placeholder="e.g., Introduction to Machine Learning" 
+                                    required 
+                                    disabled={isProcessing}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="duration">Duration</Label>
+                                <Select onValueChange={(value) => setDuration(Number(value))} defaultValue={String(duration)} disabled={isProcessing}>
+                                    <SelectTrigger id="duration">
+                                        <SelectValue placeholder="Select duration" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="15">15 minutes</SelectItem>
+                                        <SelectItem value="30">30 minutes</SelectItem>
+                                        <SelectItem value="45">45 minutes</SelectItem>
+                                        <SelectItem value="60">60 minutes</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+                        <div className="flex justify-center pt-4">
+                            <Button type="submit" size="lg" disabled={isProcessing || !topic}>
+                                {isProcessing ? (
+                                <>
+                                    <Loader2 className="animate-spin mr-2" />
+                                    {statusMessage}...
+                                </>
+                                ) : (
+                                <>
+                                <Play className="mr-2" />
+                                Start Demonstration
+                                </>
+                                )}
+                            </Button>
+                        </div>
+                    </form>
+                ) : (
+                    <div className="flex flex-col items-center gap-4 text-center">
+                         <Button onClick={handleEndClass} variant="destructive" size="lg" disabled={isProcessing}>
+                            {isProcessing ? (
+                            <>
+                                <Loader2 className="animate-spin mr-2" />
+                                {statusMessage}...
+                            </>
+                            ) : (
+                            <>
+                                <StopCircle className="mr-2" />
+                                End Demonstration
+                            </>
+                            )}
+                        </Button>
+                    </div>
+                )}
+                  
+                {isProcessing && <p className="text-sm text-muted-foreground animate-pulse text-center">{statusMessage}</p>}
             </CardContent>
         </Card>
 
