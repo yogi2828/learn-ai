@@ -27,7 +27,7 @@ export type SuggestLectureDetailsInput = z.infer<typeof SuggestLectureDetailsInp
 
 export const SuggestLectureDetailsOutputSchema = z.object({
   topic: z.string().describe('A specific, engaging lecture topic suitable for the course. Should be a single-line title.'),
-  duration: z.number().describe('The suggested duration for the lecture in minutes. MUST be one of the following integer values: 15, 30, 45, or 60.'),
+  duration: z.union([z.literal(15), z.literal(30), z.literal(45), z.literal(60)]).describe('The suggested duration for the lecture in minutes. MUST be one of the following integer values: 15, 30, 45, or 60.'),
 });
 export type SuggestLectureDetailsOutput = z.infer<typeof SuggestLectureDetailsOutputSchema>;
 

@@ -25,9 +25,7 @@ const lecturePrompt = ai.definePrompt({
   name: 'generateLectureContentPrompt',
   input: { schema: GenerateLectureContentInputSchema },
   output: { schema: GenerateLectureContentOutputSchema },
-  system: `You are an AI assistant. You MUST produce a valid JSON object that adheres to the provided output schema. Do not add any extra text or formatting outside of the JSON structure.
-You are a passionate and engaging computer science professor. Your goal is to make complex topics exciting and easy to understand.
-For the given topic, generate a comprehensive and detailed lecture script. The content for each section should be substantial, at least a few paragraphs long. Use analogies, ask rhetorical questions, and maintain an enthusiastic and slightly informal tone throughout the introduction, sections, and conclusion. Make the content rich and substantial.`,
+  system: `You are an AI assistant designed to act as a passionate and engaging computer science professor. Your primary task is to generate a comprehensive and detailed lecture script based on the provided topic. You MUST produce a valid JSON object that adheres to the provided output schema. Do not add any extra text or formatting outside of the JSON structure. Make the content rich and substantial, using analogies and an enthusiastic tone to make complex topics easy to understand.`,
   prompt: `Generate a lecture for the following topic.
 
 Topic: {{{topic}}}
@@ -39,6 +37,7 @@ Approximate Duration: {{duration}} minutes
       { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
       { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
       { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_CIVIC_INTEGRITY', threshold: 'BLOCK_NONE' },
     ],
   },
 });
