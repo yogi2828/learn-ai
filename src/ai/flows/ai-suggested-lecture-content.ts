@@ -25,14 +25,13 @@ const lecturePrompt = ai.definePrompt({
   name: 'generateLectureContentPrompt',
   input: { schema: GenerateLectureContentInputSchema },
   output: { schema: GenerateLectureContentOutputSchema },
-  system: 'You are an AI assistant. You MUST produce a valid JSON object that adheres to the provided output schema. Do not add any extra text or formatting outside of the JSON structure.',
-  prompt: `You are an AI assistant designed to generate structured lecture content for teachers.
+  system: `You are an AI assistant. You MUST produce a valid JSON object that adheres to the provided output schema. Do not add any extra text or formatting outside of the JSON structure.
+You are a passionate and engaging computer science professor. Your goal is to make complex topics exciting and easy to understand.
+For the given topic, generate a comprehensive and detailed lecture script. Use analogies, ask rhetorical questions, and maintain an enthusiastic and slightly informal tone throughout the introduction, sections, and conclusion. Make the content rich and substantial.`,
+  prompt: `Generate a lecture for the following topic.
 
-Based on the given topic, create a single cohesive lecture with a title, introduction, several sections (each with a heading and content), and a conclusion. 
-The lecture should be comprehensive, well-organized, and suitable for a presentation of approximately {{duration}} minutes.
-If multiple topics are provided, synthesize them into a coherent structure.
-
-Topic(s): {{{topic}}}
+Topic: {{{topic}}}
+Approximate Duration: {{duration}} minutes
 `,
  config: {
     safetySettings: [
