@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useFirebase } from "@/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import type { LiveClass } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, MicOff } from "lucide-react";
+import { Loader2, MicOff, PlayCircle } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -39,14 +39,21 @@ export default function LiveClassSessionPage() {
     const [liveClass, setLiveClass] = useState<LiveClass | null>(null);
     const [loading, setLoading] = useState(true);
     const aiTeacherAvatar = PlaceHolderImages.find(p => p.id === 'teacher-avatar-1');
+    const [sessionJoined, setSessionJoined] = useState(false);
+    const audioRef = useRef<HTMLAudioElement>(null);
 
     useEffect(() => {
         const classRef = doc(firestore, 'liveClasses', classId);
         const unsubscribe = onSnapshot(classRef, (doc) => {
             if(doc.exists()) {
-                setLiveClass(doc.data() as LiveClass);
+                const classData = doc.data() as LiveClass;
+                if (classData.status !== 'live') {
+                    setSessionJoined(false);
+                }
+                setLiveClass(classData);
             } else {
                 setLiveClass(null);
+                setSessionJoined(false);
             }
             setLoading(false);
         }, (error) => {
@@ -57,6 +64,10 @@ export default function LiveClassSessionPage() {
         return () => unsubscribe();
     }, [firestore]);
 
+    const handleJoinSession = () => {
+        setSessionJoined(true);
+        audioRef.current?.play();
+    };
 
     if(loading) {
         return <ClassroomSkeleton />;
@@ -71,6 +82,19 @@ export default function LiveClassSessionPage() {
                  <Button asChild className="mt-6">
                      <Link href="/dashboard/live-classes">Go Back to Live Classes</Link>
                  </Button>
+            </div>
+        )
+    }
+    
+    if (!sessionJoined) {
+        return (
+            <div className="flex flex-col items-center justify-center h-full text-center">
+                <PlayCircle className="h-16 w-16 text-primary" />
+                <h2 className="mt-4 text-2xl font-bold font-headline">Ready to Join the AI Lecture?</h2>
+                <p className="text-muted-foreground mt-2">Topic: {liveClass.topic}</p>
+                <Button onClick={handleJoinSession} className="mt-6" size="lg">
+                    Join Session
+                </Button>
             </div>
         )
     }
@@ -112,7 +136,7 @@ export default function LiveClassSessionPage() {
                             <CardTitle>Lecture Audio</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <audio controls autoPlay src={liveClass.audioUrl} className="w-full">
+                            <audio ref={audioRef} controls src={liveClass.audioUrl} className="w-full">
                                 Your browser does not support the audio element.
                             </audio>
                         </CardContent>
