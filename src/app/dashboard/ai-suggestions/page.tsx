@@ -2,7 +2,7 @@
 import { useState, useTransition, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { getLectureContent, getRecordedLecture } from '@/app/actions';
+import { getLectureContent } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Bot, Loader2, Play, StopCircle, Circle } from 'lucide-react';
 import { useUser } from '@/components/user-provider';
@@ -66,20 +66,6 @@ export default function AITeacherStudioPage() {
           throw new Error(contentResult.error || 'Failed to generate lecture script.');
         }
         
-        setStatusMessage('Generating lecture audio...');
-        toast({ title: 'AI Teacher is Preparing...', description: 'Generating lecture audio. This can take up to a minute.' });
-        
-        const scriptText = [
-            `Title: ${contentResult.data.title}`, `Introduction: ${contentResult.data.introduction}`,
-            ...contentResult.data.sections.map(s => `${s.heading}. ${s.content}`),
-            `Conclusion: ${contentResult.data.conclusion}`
-        ].join('\n\n');
-
-        const audioResult = await getRecordedLecture(scriptText);
-        if (!audioResult.success || !audioResult.data) {
-          throw new Error(audioResult.error || 'Failed to generate lecture audio.');
-        }
-
         setStatusMessage('Starting class and notifying students...');
         const classRef = doc(firestore, 'liveClasses', DEMO_CLASS_ID);
         const classData: LiveClass = {
@@ -90,7 +76,6 @@ export default function AITeacherStudioPage() {
             title: contentResult.data.title,
             description: "An AI-led demonstration class.",
             script: contentResult.data,
-            audioUrl: audioResult.data.media,
             teacherName: 'AI Teacher',
             updatedAt: serverTimestamp(),
         };
@@ -104,15 +89,6 @@ export default function AITeacherStudioPage() {
             createdAt: serverTimestamp(),
         };
         await addDoc(collection(firestore, 'announcements'), announcementData);
-
-        const recordedLectureData = {
-          topic: DEMO_LECTURE_TOPIC,
-          script: contentResult.data,
-          audioUrl: audioResult.data.media,
-          createdAt: serverTimestamp(),
-          teacherName: 'AI Teacher',
-        };
-        await addDoc(collection(firestore, 'recordedLectures'), recordedLectureData);
 
         toast({ title: 'AI Demo Class Started!', description: 'Students have been notified.' });
         setStatusMessage('Class is live!');
@@ -131,7 +107,6 @@ export default function AITeacherStudioPage() {
         const classData: Partial<LiveClass> = {
             status: 'ended',
             script: undefined,
-            audioUrl: undefined,
             updatedAt: serverTimestamp(),
         };
 
@@ -161,7 +136,7 @@ export default function AITeacherStudioPage() {
             <Bot className="h-4 w-4" />
             <AlertTitle>How it Works</AlertTitle>
             <AlertDescription>
-                Clicking &quot;Start Demonstration&quot; will trigger a multi-step process: the AI generates a full lecture script and audio on a pre-defined topic, starts a live class session, and notifies all students. This may take up to a minute to complete.
+                Clicking &quot;Start Demonstration&quot; triggers the AI to generate a full lecture script, starts a live class session, and notifies all students. The lecture audio is generated in real-time on the student&apos;s device.
             </AlertDescription>
         </Alert>
 

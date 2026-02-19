@@ -2,7 +2,6 @@
 
 import { aiChatbot } from '@/ai/flows/ai-chatbot-doubt-solving';
 import { generateLectureContent } from '@/ai/flows/ai-suggested-lecture-content';
-import { generateRecordedLecture } from '@/ai/flows/ai-generated-recorded-lectures';
 import { suggestLectureDetails } from '@/ai/flows/ai-suggest-lecture-details';
 import type { GenerateLectureContentOutput, SuggestLectureDetailsOutput } from '@/lib/types';
 
@@ -35,18 +34,6 @@ export async function getLectureContent(topic: string, duration: number): Promis
   } catch (error: any) {
     console.error("Error in getLectureContent action:", error);
     const errorMessage = getBetterErrorMessage(error, 'Failed to generate lecture content.');
-    return { success: false, error: errorMessage };
-  }
-}
-
-export async function getRecordedLecture(script: string) {
-  try {
-    const result = await generateRecordedLecture({ script });
-    return { success: true, data: result };
-  } catch (error: any)
-{
-    console.error("Error in getRecordedLecture action:", error);
-    const errorMessage = getBetterErrorMessage(error, 'Failed to generate recorded lecture.');
     return { success: false, error: errorMessage };
   }
 }
