@@ -92,11 +92,6 @@ export default function RecordedLecturesPage() {
                                     {lecture.script.sections.map((section, index) => (
                                         <div key={index}>
                                             <h3>{section.heading}</h3>
-                                            {section.imageUrl && (
-                                                <div className="relative aspect-video w-full my-4 rounded-lg overflow-hidden not-prose">
-                                                    <Image src={section.imageUrl} alt={section.heading} layout="fill" className="object-contain" />
-                                                </div>
-                                            )}
                                             <p>{section.content}</p>
                                         </div>
                                     ))}

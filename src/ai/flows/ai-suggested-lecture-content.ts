@@ -32,8 +32,6 @@ Based on the given topic, create a single cohesive lecture with a title, introdu
 The lecture should be comprehensive, well-organized, and suitable for a presentation of approximately {{duration}} minutes.
 If multiple topics are provided, synthesize them into a coherent structure.
 
-IMPORTANT: Do NOT generate values for the 'imageUrl' field. This field should not be present in the output. Only text content should be generated.
-
 Topic(s): {{{topic}}}
 `,
  config: {
@@ -53,22 +51,12 @@ const generateLectureContentFlow = ai.defineFlow(
     outputSchema: GenerateLectureContentOutputSchema,
   },
   async (input: GenerateLectureContentInput): Promise<GenerateLectureContentOutput> => {
-    // 1. Generate the text content
     const { output } = await lecturePrompt(input);
     
     if (!output) {
         throw new Error(`The AI returned an invalid or empty data format for the lecture text.`);
     }
     
-    // 2. Ensure imageUrls are not present, even if the model hallucinates them.
-    const sectionsWithoutImages = output.sections.map(({ heading, content }) => ({
-      heading,
-      content,
-    }));
-    
-    return {
-        ...output,
-        sections: sectionsWithoutImages,
-    };
+    return output;
   }
 );

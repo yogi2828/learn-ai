@@ -14,7 +14,6 @@ export const GenerateLectureContentOutputSchema = z.object({
   sections: z.array(z.object({
       heading: z.string().describe("The heading for this section of the lecture."),
       content: z.string().describe("The detailed content for this section."),
-      imageUrl: z.string().url().optional().describe("A URL to a relevant image for this section."),
   })).describe("An array of lecture sections, each with a heading and content."),
   conclusion: z.string().describe("A concluding summary of the lecture."),
 });
