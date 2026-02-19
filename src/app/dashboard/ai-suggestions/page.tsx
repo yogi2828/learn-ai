@@ -8,7 +8,7 @@ import { Bot, Loader2, Play, StopCircle, Circle } from 'lucide-react';
 import { useUser } from '@/components/user-provider';
 import { useRouter } from 'next/navigation';
 import { useFirebase } from '@/firebase';
-import { doc, onSnapshot, setDoc, serverTimestamp, addDoc, collection } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc, serverTimestamp, addDoc, collection, updateDoc, deleteField } from 'firebase/firestore';
 import type { LiveClass } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { errorEmitter } from '@/firebase/error-emitter';
@@ -104,18 +104,19 @@ export default function AITeacherStudioPage() {
     startProcessing(async () => {
         setStatusMessage('Ending class session...');
         const classRef = doc(firestore, 'liveClasses', DEMO_CLASS_ID);
-        const classData: Partial<LiveClass> = {
+        
+        const updateData = {
             status: 'ended',
-            script: undefined,
+            script: deleteField(),
             updatedAt: serverTimestamp(),
         };
 
         try {
-            await setDoc(classRef, classData, { merge: true });
+            await updateDoc(classRef, updateData);
             toast({ title: `Demo Class Ended`, description: `The session has been successfully ended.` });
             setStatusMessage('Class ended.');
         } catch (error: any) {
-            const permissionError = new FirestorePermissionError({ path: classRef.path, operation: 'update', requestResourceData: classData }, error);
+            const permissionError = new FirestorePermissionError({ path: classRef.path, operation: 'update', requestResourceData: { status: 'ended' } }, error);
             errorEmitter.emit('permission-error', permissionError);
             toast({ title: "Error", description: "Could not end the class session.", variant: 'destructive'});
             setStatusMessage('Error ending class.');
