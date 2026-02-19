@@ -117,6 +117,7 @@ export type LiveClass = {
     script?: GenerateLectureContentOutput;
     audioUrl?: string;
     scheduledAt?: Timestamp;
+    updatedAt?: Timestamp;
 }
 
 export type RecordedLecture = {
