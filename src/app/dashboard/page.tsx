@@ -81,7 +81,7 @@ export default function DashboardPage() {
   ];
 
   const teacherLinks = [
-    { title: "Live AI Class", description: "Generate materials and start a new AI-led class.", href: "/dashboard/ai-suggestions", icon: <Presentation /> },
+    { title: "AI Teacher Studio", description: "Generate materials and start a new AI-led class.", href: "/dashboard/ai-suggestions", icon: <Presentation /> },
     { title: "Manage Assignments", description: "Create, view, and grade student assignments.", href: "/dashboard/assignments", icon: <ClipboardList /> },
     { title: "View Attendance", description: "Monitor student attendance records.", href: "/dashboard/view-attendance", icon: <Users /> },
     { title: "Post Announcements", description: "Share updates with all students and faculty.", href: "/dashboard/announcements", icon: <Megaphone /> },

@@ -45,6 +45,8 @@ export default function LiveClassSessionPage() {
         const unsubscribe = onSnapshot(classRef, (doc) => {
             if(doc.exists()) {
                 setLiveClass(doc.data() as LiveClass);
+            } else {
+                setLiveClass(null);
             }
             setLoading(false);
         }, (error) => {

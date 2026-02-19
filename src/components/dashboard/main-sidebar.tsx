@@ -42,7 +42,7 @@ const studentNav = [
 
 const teacherNav = [
   { href: '/dashboard/courses', label: 'Manage Courses', icon: BookOpen },
-  { href: '/dashboard/ai-suggestions', label: 'AI Teacher Studio', icon: Presentation },
+  { href: '/dashboard/ai-suggestions', label: 'AI Teacher Studio', icon: Bot },
   { href: '/dashboard/assignments', label: 'Manage Assignments', icon: ClipboardList },
   { href: '/dashboard/view-attendance', label: 'View Attendance', icon: Users },
   { href: '/dashboard/announcements', label: 'Post Announcements', icon: Megaphone },
