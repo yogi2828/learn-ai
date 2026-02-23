@@ -100,8 +100,17 @@ export default function AITeacherStudioPage() {
             createdAt: serverTimestamp(),
         };
         await addDoc(collection(firestore, 'announcements'), announcementData);
+        
+        const recordedLectureData = {
+            topic: topic,
+            script: contentResult.data,
+            teacherName: 'AI Teacher',
+            createdAt: serverTimestamp(),
+        };
+        await addDoc(collection(firestore, 'recordedLectures'), recordedLectureData);
 
-        toast({ title: 'AI Demo Class Started!', description: 'Students have been notified.' });
+
+        toast({ title: 'AI Demo Class Started!', description: 'Students have been notified and the lecture has been saved.' });
         setStatusMessage('Class is live!');
 
       } catch (error: any) {

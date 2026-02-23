@@ -124,7 +124,7 @@ export type RecordedLecture = {
   id: string;
   topic: string;
   script: GenerateLectureContentOutput;
-  audioUrl: string;
+  audioUrl?: string;
   createdAt: Timestamp;
   teacherName: string;
 };

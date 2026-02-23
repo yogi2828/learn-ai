@@ -3,9 +3,9 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useFirebase } from "@/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
-import type { LiveClass } from "@/lib/types";
+import type { LiveClass, Message } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MicOff, Play, Pause, StopCircle, PlayCircle } from "lucide-react";
+import { MicOff, Play, Pause, StopCircle, PlayCircle, Send, Bot, Loader2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -15,6 +15,10 @@ import { FirestorePermissionError } from "@/firebase/errors";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/components/user-provider";
+import { cn } from "@/lib/utils";
+import { getChatbotResponse } from "@/app/actions";
+import { Input } from "@/components/ui/input";
 
 const classId = 'ai-demo-class';
 
@@ -33,6 +37,106 @@ const ClassroomSkeleton = () => (
         </div>
     </div>
 );
+
+const LiveChatbot = ({ lectureContext }: { lectureContext: string }) => {
+    const { user } = useUser();
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [input, setInput] = useState('');
+    const [isPending, startTransition] = useTransition();
+    const { toast } = useToast();
+    const scrollAreaRef = useRef<HTMLDivElement>(null);
+  
+    useEffect(() => {
+      if (scrollAreaRef.current) {
+        scrollAreaRef.current.scrollTo({ top: scrollAreaRef.current.scrollHeight, behavior: 'smooth' });
+      }
+    }, [messages]);
+  
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!input.trim() || !user) return;
+      
+      const userMessage: Message = { role: 'user', content: input };
+      setMessages(prev => [...prev, userMessage]);
+      setInput('');
+  
+      startTransition(async () => {
+        const result = await getChatbotResponse(input, lectureContext);
+        if(result.success && result.data) {
+            const assistantMessage: Message = { role: 'assistant', content: result.data.answer };
+            setMessages(prev => [...prev, assistantMessage]);
+        } else {
+            toast({
+                title: "Error",
+                description: result.error || "Failed to get a response from the chatbot.",
+                variant: "destructive",
+            });
+            setMessages(prev => prev.slice(0, -1)); // remove user message on error
+        }
+      });
+    }
+  
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Ask AI About This Lecture</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col h-[50vh]">
+          <ScrollArea className="flex-grow p-4 -m-4" ref={scrollAreaRef}>
+              <div className="space-y-4">
+                {messages.length === 0 && (
+                    <div className="flex flex-col items-center justify-center text-center p-4 h-full">
+                        <Bot className="h-8 w-8 text-muted-foreground" />
+                        <p className="mt-2 text-sm text-muted-foreground">Ask a question about the lecture to get started.</p>
+                    </div>
+                )}
+                {messages.map((message, index) => (
+                    <div key={index} className={cn("flex items-start gap-3", message.role === 'user' ? 'justify-end' : '')}>
+                        {message.role === 'assistant' && (
+                            <Avatar className="h-8 w-8">
+                                <AvatarFallback><Bot size={20} /></AvatarFallback>
+                            </Avatar>
+                        )}
+                        <div className={cn("rounded-lg p-3 max-w-xs shadow-sm", message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-secondary')}>
+                            <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                        </div>
+                         {message.role === 'user' && user && (
+                             <Avatar className="h-8 w-8">
+                                <AvatarImage src={user.avatarUrl} alt={user.name} />
+                                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                        )}
+                    </div>
+                ))}
+                {isPending && (
+                     <div className="flex items-start gap-3">
+                        <Avatar className="h-8 w-8">
+                            <AvatarFallback><Bot size={20} /></AvatarFallback>
+                        </Avatar>
+                        <div className="rounded-lg p-3 bg-secondary flex items-center">
+                            <Loader2 className="h-5 w-5 text-muted-foreground animate-spin" />
+                        </div>
+                    </div>
+                )}
+            </div>
+          </ScrollArea>
+          <div className="pt-4 mt-4 border-t">
+              <form onSubmit={handleSubmit} className="flex items-center gap-2">
+                  <Input 
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      placeholder="Ask a question..."
+                      disabled={isPending}
+                  />
+                  <Button type="submit" size="icon" disabled={isPending || !input.trim()}>
+                      <Send className="h-4 w-4" />
+                  </Button>
+              </form>
+          </div>
+        </CardContent>
+      </Card>
+    );
+}
 
 export default function LiveClassSessionPage() {
     const { firestore } = useFirebase();
@@ -252,6 +356,7 @@ export default function LiveClassSessionPage() {
                             </Button>
                         </CardContent>
                     </Card>
+                    <LiveChatbot lectureContext={flatSentences.join(' ')} />
                 </div>
                 <div className="md:col-span-2">
                     <Card>
