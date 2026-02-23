@@ -1,16 +1,20 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
+import { useParams, useSearchParams } from 'next/navigation';
 import { useUser } from '@/components/user-provider';
 import { mockCourses } from '@/lib/mock-courses';
 import type { Course } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import { Download, Award, ShieldCheck } from 'lucide-react';
+import { Download, Award, Lock } from 'lucide-react';
 import jsPDF from 'jspdf';
 import { Icons } from '@/components/icons';
+import { cn } from '@/lib/utils';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import Link from 'next/link';
 
-export default function CertificatePage() {
+function CertificateContent() {
     const params = useParams();
+    const searchParams = useSearchParams();
     const { id } = params;
     const { user } = useUser();
     const [course, setCourse] = useState<Course | null>(null);
@@ -20,15 +24,39 @@ export default function CertificatePage() {
         day: 'numeric',
     });
 
+    const progress = Number(searchParams.get('progress') ?? 0);
+    const isComplete = progress >= 100;
+
     useEffect(() => {
         const foundCourse = mockCourses.find(c => c.id === id);
         if (foundCourse) {
             setCourse(foundCourse);
         }
     }, [id]);
+    
+    useEffect(() => {
+        const styleId = 'bg-grid-pattern-style';
+        if (document.getElementById(styleId)) return;
+
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.innerHTML = `
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }`;
+        document.head.appendChild(style);
+
+        return () => {
+            const styleElement = document.getElementById(styleId);
+            if (styleElement) {
+                document.head.removeChild(styleElement);
+            }
+        }
+    }, []);
 
     const handleDownloadPdf = () => {
-        if (!user || !course) return;
+        if (!user || !course || !isComplete) return;
 
         const doc = new jsPDF({
             orientation: 'landscape',
@@ -94,7 +122,24 @@ export default function CertificatePage() {
 
     return (
         <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
-            <div className="bg-card border-2 border-primary/20 shadow-2xl rounded-lg p-8 relative overflow-hidden">
+            {!isComplete && (
+                <Alert variant="destructive" className="mb-8">
+                    <Lock className="h-4 w-4" />
+                    <AlertTitle>Course Not Completed</AlertTitle>
+                    <AlertDescription>
+                        You must complete 100% of the course to unlock and download your certificate.
+                        <Button variant="link" asChild className="p-0 h-auto ml-2">
+                           <Link href={`/dashboard/courses/${id}`}>Return to Course</Link>
+                        </Button>
+                    </AlertDescription>
+                </Alert>
+            )}
+
+            <div className={cn(
+                "bg-card border-2 border-primary/20 shadow-2xl rounded-lg p-8 relative overflow-hidden",
+                !isComplete && "blur-md pointer-events-none select-none"
+                )}
+            >
                 <div className="absolute top-0 left-0 w-full h-full bg-grid-pattern opacity-5"></div>
                 <div className="relative z-10">
                     <div className="text-center mb-8">
@@ -127,21 +172,22 @@ export default function CertificatePage() {
                     </div>
                 </div>
             </div>
-             <div className="mt-8 text-center">
-                <Button onClick={handleDownloadPdf}>
-                    <Download className="mr-2" />
-                    Download PDF
-                </Button>
-            </div>
+             {isComplete && (
+                <div className="mt-8 text-center">
+                    <Button onClick={handleDownloadPdf}>
+                        <Download className="mr-2" />
+                        Download PDF
+                    </Button>
+                </div>
+             )}
         </div>
     );
 }
 
-// Simple grid pattern for background
-const style = document.createElement('style');
-style.innerHTML = `
-.bg-grid-pattern {
-    background-image: linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
-    background-size: 20px 20px;
-}`;
-document.head.appendChild(style);
+export default function CertificatePage() {
+    return (
+        <Suspense fallback={<div>Loading certificate...</div>}>
+            <CertificateContent />
+        </Suspense>
+    )
+}

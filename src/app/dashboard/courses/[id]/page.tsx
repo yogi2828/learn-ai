@@ -175,13 +175,13 @@ export default function CourseDetailPage() {
                      <Card className="mt-6">
                         <CardHeader>
                             <CardTitle>Course Certificate</CardTitle>
-                            <CardDescription>Complete all lessons to unlock your certificate.</CardDescription>
+                            <CardDescription>Complete all lessons to view and download your certificate.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <Button asChild disabled={progress < 100} className="w-full">
-                                <Link href={`/dashboard/courses/${course.id}/certificate`}>
+                            <Button asChild className="w-full">
+                                <Link href={`/dashboard/courses/${course.id}/certificate?progress=${progress}`}>
                                     <Award className="mr-2" />
-                                    Generate Certificate
+                                    {progress < 100 ? 'View Certificate Progress' : 'View Your Certificate'}
                                 </Link>
                             </Button>
                         </CardContent>
