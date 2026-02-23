@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef, useTransition } from "react";
 import { useFirebase } from "@/firebase";
 import { doc, onSnapshot } from "firebase/firestore";
 import type { LiveClass, Message } from "@/lib/types";
